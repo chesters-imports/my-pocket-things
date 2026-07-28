@@ -1,0 +1,565 @@
+/* My Pocket Chapbook · teenage zine pocket press — heavy poetry, not kawaii */
+
+:root {
+  --void: #0c0a0e;
+  --panel: #141018;
+  --line: #2a2230;
+  --cream: #e8e0d4;
+  --mute: #8a7a88;
+  --hot: #c43c6a;
+  --hot-dim: #6a1838;
+  --ok: #3a8a6a;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --display: "Special Elite", "Courier New", monospace;
+  --serif: "Instrument Serif", Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body.pc {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--cream);
+  background: var(--void);
+  display: flex;
+  flex-direction: column;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(196, 60, 106, 0.12), transparent 55%),
+    linear-gradient(180deg, #100c12 0%, var(--void) 40%);
+}
+
+.pc-chrome {
+  flex: 0 0 1.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.45rem;
+  background: #08060a;
+  border-bottom: 1px solid var(--line);
+}
+
+.pc-chip {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--hot);
+}
+
+.pc-chip strong {
+  color: var(--cream);
+}
+
+.pc-drag {
+  flex: 1;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pc-win {
+  min-width: 4rem;
+}
+
+.pc-tabs {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.pc-tab {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--mute);
+  cursor: pointer;
+}
+
+.pc-tab.is-on {
+  color: var(--cream);
+  background: color-mix(in srgb, var(--hot) 18%, transparent);
+  box-shadow: inset 0 -2px 0 var(--hot);
+}
+
+.pc-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pc-view {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pc-view[hidden] {
+  display: none !important;
+}
+
+.pc-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.55rem;
+  border-bottom: 1px solid var(--line);
+  background: rgba(20, 16, 24, 0.9);
+}
+
+.pc-search,
+.pc-input,
+.pc-select,
+.pc-book-title {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--cream);
+  background: #0a080c;
+  border: 1px solid var(--line);
+  padding: 0.28rem 0.4rem;
+}
+
+.pc-search {
+  flex: 1 1 12rem;
+  min-width: 8rem;
+}
+
+.pc-book-title {
+  flex: 1 1 10rem;
+  font-family: var(--display);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.pc-check {
+  font-size: 0.58rem;
+  color: var(--mute);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pc-btn {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--line);
+  background: #1a1420;
+  color: var(--cream);
+  cursor: pointer;
+}
+
+.pc-btn:hover {
+  border-color: var(--hot);
+  color: #fff;
+}
+
+.pc-btn-accent {
+  border-color: var(--hot-dim);
+  background: linear-gradient(180deg, #3a1830 0%, #1a0c18 100%);
+  color: #f0c0d0;
+}
+
+.pc-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--mute);
+}
+
+.pc-btn-warn {
+  border-color: #5a3030;
+  color: #e0a0a0;
+}
+
+.pc-pool-list,
+.pc-book-list,
+.pc-editor {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.55rem;
+}
+
+/* poem rows in pool */
+.pc-poem-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--hot-dim);
+  background: var(--panel);
+  margin-bottom: 0.35rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+}
+
+.pc-poem-row:hover {
+  border-color: #4a3850;
+  background: #1a1520;
+}
+
+.pc-poem-row.is-archived {
+  opacity: 0.45;
+  border-left-color: #403848;
+}
+
+.pc-poem-id {
+  font-size: 0.55rem;
+  color: var(--hot);
+  letter-spacing: 0.04em;
+}
+
+.pc-poem-name {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--cream);
+}
+
+.pc-poem-sub {
+  font-size: 0.55rem;
+  color: var(--mute);
+  margin-top: 0.15rem;
+}
+
+.pc-poem-tags {
+  font-size: 0.5rem;
+  color: #a08098;
+  text-align: right;
+  max-width: 8rem;
+}
+
+/* chapbook cards */
+.pc-book-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 0.45rem;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(135deg, rgba(196, 60, 106, 0.08), transparent 40%),
+    var(--panel);
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.pc-book-card:hover {
+  border-color: var(--hot-dim);
+}
+
+.pc-book-card-title {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+}
+
+.pc-book-card-meta {
+  font-size: 0.55rem;
+  color: var(--mute);
+  margin-top: 0.25rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pc-status-complete {
+  color: var(--ok);
+}
+
+.pc-status-progress {
+  color: var(--hot);
+}
+
+/* editor sections + page sheets */
+.pc-section {
+  margin-bottom: 1rem;
+  border: 1px solid var(--line);
+  background: #100c14;
+}
+
+.pc-section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.45rem;
+  border-bottom: 1px solid var(--line);
+  background: #18141c;
+}
+
+.pc-section-title {
+  flex: 1;
+  font-family: var(--display);
+  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--cream);
+  padding: 0.15rem 0.25rem;
+}
+
+.pc-section-title:focus {
+  border-color: var(--line);
+  outline: none;
+}
+
+.pc-sheets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  padding: 0.65rem;
+  min-height: 4rem;
+  touch-action: none;
+}
+
+.pc-sheet {
+  width: 7.2rem;
+  min-height: 9rem;
+  padding: 0.45rem 0.4rem 0.5rem;
+  background: #f2ebe0;
+  color: #1a1218;
+  border: 1px solid #c4b8a8;
+  box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.35);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.pc-sheet:active {
+  cursor: grabbing;
+}
+
+.pc-sheet.is-dragging {
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.pc-sheet-num {
+  font-family: var(--mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  color: #8a6878;
+  margin-bottom: 0.25rem;
+}
+
+.pc-sheet-title {
+  font-family: var(--display);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  margin-bottom: 0.3rem;
+  color: #1a1018;
+}
+
+.pc-sheet-body {
+  flex: 1;
+  font-family: var(--serif);
+  font-size: 0.62rem;
+  line-height: 1.25;
+  color: #3a2c34;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  white-space: pre-wrap;
+}
+
+.pc-sheet-x {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.2rem;
+  border: none;
+  background: transparent;
+  color: #8a6878;
+  font-size: 0.7rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.1rem;
+}
+
+.pc-sheet-x:hover {
+  color: var(--hot);
+}
+
+.pc-drop-hint {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px dashed #4a3850;
+  color: var(--mute);
+  font-size: 0.58rem;
+  text-align: center;
+}
+
+/* modal */
+.pc-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.pc-modal[hidden] {
+  display: none !important;
+}
+
+.pc-modal-card {
+  width: min(36rem, 100%);
+  max-height: min(90vh, 40rem);
+  overflow: auto;
+  background: #16121a;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  padding: 0.75rem 0.85rem 0.9rem;
+}
+
+.pc-modal-pick {
+  width: min(28rem, 100%);
+}
+
+.pc-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+}
+
+.pc-poem-chip {
+  color: var(--hot);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+}
+
+.pc-lab {
+  display: block;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin: 0.4rem 0 0.15rem;
+}
+
+.pc-textarea {
+  width: 100%;
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--cream);
+  background: #0a080c;
+  border: 1px solid var(--line);
+  padding: 0.45rem;
+  resize: vertical;
+  min-height: 10rem;
+}
+
+.pc-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.pc-modal-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+}
+
+.pc-meta {
+  font-size: 0.5rem;
+  color: var(--mute);
+  margin-left: auto;
+}
+
+.pc-pick-list {
+  max-height: 20rem;
+  overflow: auto;
+}
+
+.pc-pick-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.4rem 0.45rem;
+  margin-bottom: 0.25rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--cream);
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.pc-pick-item:hover {
+  border-color: var(--hot-dim);
+}
+
+.pc-pick-item small {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  color: var(--mute);
+  margin-top: 0.15rem;
+}
+
+.pc-toast {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 200;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  padding: 0.4rem 0.65rem;
+  background: #1a1018;
+  border: 1px solid var(--hot-dim);
+  color: var(--cream);
+}
+
+.pc-toast[hidden] {
+  display: none !important;
+}
+
+.pc-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--mute);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+}

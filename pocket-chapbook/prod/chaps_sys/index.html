@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Pocket Chapbook · CO.MYPT-001-CHAPS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Special+Elite&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body class="pc">
+  <header class="pc-chrome" data-deck-chrome>
+    <span class="pc-chip" data-deck-menu>MY<strong>POCKET</strong></span>
+    <span class="pc-drag" data-deck-drag>chapbook · CO.MYPT-001-CHAPS</span>
+    <div class="pc-win" data-deck-window-controls></div>
+  </header>
+
+  <nav class="pc-tabs" role="tablist">
+    <button type="button" class="pc-tab is-on" data-view="pool" id="tabPool">POOL</button>
+    <button type="button" class="pc-tab" data-view="books" id="tabBooks">CHAPBOOKS</button>
+    <button type="button" class="pc-tab" data-view="editor" id="tabEditor" hidden>SHEETS</button>
+  </nav>
+
+  <main class="pc-main">
+    <!-- POOL -->
+    <section class="pc-view" id="viewPool">
+      <div class="pc-toolbar">
+        <input type="search" id="poolSearch" class="pc-search" placeholder="search title / tag / author…" />
+        <label class="pc-check"><input type="checkbox" id="poolShowArchived" /> archived</label>
+        <button type="button" class="pc-btn" id="btnNewPoem">+ POEM</button>
+      </div>
+      <div class="pc-pool-list" id="poolList"></div>
+    </section>
+
+    <!-- CHAPBOOKS -->
+    <section class="pc-view" id="viewBooks" hidden>
+      <div class="pc-toolbar">
+        <button type="button" class="pc-btn" id="btnNewBook">+ CHAPBOOK</button>
+      </div>
+      <div class="pc-book-list" id="bookList"></div>
+    </section>
+
+    <!-- EDITOR -->
+    <section class="pc-view" id="viewEditor" hidden>
+      <div class="pc-toolbar pc-editor-bar">
+        <button type="button" class="pc-btn pc-btn-ghost" id="btnBackBooks">← books</button>
+        <input type="text" id="bookTitle" class="pc-book-title" />
+        <select id="bookStatus" class="pc-select">
+          <option value="in_progress">in progress</option>
+          <option value="complete">complete</option>
+        </select>
+        <button type="button" class="pc-btn" id="btnAddSection">+ SECTION</button>
+        <button type="button" class="pc-btn pc-btn-accent" id="btnAddFromPool">+ FROM POOL</button>
+      </div>
+      <div class="pc-editor" id="editorRoot"></div>
+    </section>
+  </main>
+
+  <!-- poem modal -->
+  <div class="pc-modal" id="poemModal" hidden>
+    <div class="pc-modal-card">
+      <div class="pc-modal-head">
+        <span id="poemChip" class="pc-poem-chip">—</span>
+        <button type="button" class="pc-btn pc-btn-ghost" id="poemClose">×</button>
+      </div>
+      <label class="pc-lab">title</label>
+      <input type="text" id="poemTitle" class="pc-input" />
+      <div class="pc-row2">
+        <div>
+          <label class="pc-lab">author</label>
+          <input type="text" id="poemAuthor" class="pc-input" placeholder="you / pseudonym / agent name" />
+        </div>
+        <div>
+          <label class="pc-lab">created (YYYY-MM-DD or blank=now)</label>
+          <input type="text" id="poemCreated" class="pc-input" placeholder="blank = now" />
+        </div>
+      </div>
+      <label class="pc-lab">tags (comma)</label>
+      <input type="text" id="poemTags" class="pc-input" placeholder="ocean, body, night" />
+      <label class="pc-lab">body</label>
+      <textarea id="poemBody" class="pc-textarea" rows="12"></textarea>
+      <div class="pc-modal-foot">
+        <button type="button" class="pc-btn" id="poemSave">SAVE</button>
+        <button type="button" class="pc-btn pc-btn-warn" id="poemArchive">ARCHIVE</button>
+        <button type="button" class="pc-btn pc-btn-ghost" id="poemUnarchive" hidden>UNARCHIVE</button>
+        <span id="poemMeta" class="pc-meta"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- pick from pool -->
+  <div class="pc-modal" id="pickModal" hidden>
+    <div class="pc-modal-card pc-modal-pick">
+      <div class="pc-modal-head">
+        <span>add from pool</span>
+        <button type="button" class="pc-btn pc-btn-ghost" id="pickClose">×</button>
+      </div>
+      <div id="pickList" class="pc-pick-list"></div>
+    </div>
+  </div>
+
+  <div class="pc-toast" id="toast" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>
