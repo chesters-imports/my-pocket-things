@@ -10,14 +10,15 @@ Thumbs.db
 .venv/
 venv/
 
-# Operator mats / papers — local only for now
-**/safe_box/**
-!**/safe_box/.gitkeep
-**/paper/
-**/store.json
-**/library.json
-**/data/*.log
+
 
 # Operator library (local)
 pocket-chapbook/prod/chaps_sys/library.json
 pocket-chapbook/prod/**/library.json
+
+# Operator mats / papers — local only for now (Hands will un-ignore later)
+safe_box/
+**/safe_box/
+paper/
+**/paper/
+
