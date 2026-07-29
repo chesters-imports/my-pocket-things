@@ -12,9 +12,12 @@ venv/
 
 
 
-# Operator library (local)
+# Operator library (local clay — product code ships, notes stay private)
 pocket-chapbook/prod/chaps_sys/library.json
 pocket-chapbook/prod/**/library.json
+pocket-notebook/prod/notes_sys/data/library.json
+pocket-notebook/prod/**/library.json
+pocket-notebook/prod/**/desk-server.log
 
 # Operator mats / papers — local only for now (Hands will un-ignore later)
 safe_box/
