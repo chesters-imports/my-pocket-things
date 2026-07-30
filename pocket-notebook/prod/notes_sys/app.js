@@ -331,7 +331,7 @@
     stage.innerHTML =
       `<div class="pn-shelf">` +
       `<h1 class="pn-shelf-title">Pocket notebooks</h1>` +
-      `<div class="pn-shelf-sub">MYPOCKET · not a terminal · not a mega-notes app</div>` +
+      `<div class="pn-shelf-sub">MYPOCKET</div>` +
       `<div class="pn-shelf-row" id="shelfRow">` +
       books
         .map((nb) => {
@@ -651,7 +651,7 @@
         ? `<div class="pn-page-body pn-page-body-edit" id="pageBody" contenteditable="true" spellcheck="true">${esc(
             pg.body || ""
           )}</div>` +
-          `<div class="pn-md-hint mono"># headers · **bold** · ++underline++ · \`code\` · \`\`\`block\`\`\` · - [ ] check · @name</div>`
+          `<div class="pn-md-hint mono"># ** ++ \` - [ ] @</div>`
         : `<div class="pn-page-body pn-page-body-md" id="pageBody">${
             (pg.body || "").trim()
               ? renderMarkdown(pg.body)
