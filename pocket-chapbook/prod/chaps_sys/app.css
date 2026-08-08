@@ -205,17 +205,36 @@ body.pc {
   padding: 0.55rem;
 }
 
-/* poem rows in pool */
+/* poem rows in pool — dense for 300+ */
+.pc-pool-count {
+  font-size: 0.5rem;
+  color: var(--mute);
+  letter-spacing: 0.06em;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.pc-select {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--cream);
+  padding: 0.28rem 0.35rem;
+  max-width: 9rem;
+}
+
 .pc-poem-row {
   display: grid;
-  grid-template-columns: 5.5rem 1fr auto;
-  gap: 0.5rem;
+  grid-template-columns: 5.2rem 1fr minmax(4rem, 7rem);
+  gap: 0.35rem 0.45rem;
   align-items: baseline;
-  padding: 0.45rem 0.5rem;
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--hot-dim);
-  background: var(--panel);
-  margin-bottom: 0.35rem;
+  padding: 0.28rem 0.4rem;
+  border: 1px solid transparent;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-left: 2px solid var(--hot-dim);
+  background: transparent;
+  margin-bottom: 0;
   cursor: pointer;
   text-align: left;
   width: 100%;
@@ -229,33 +248,54 @@ body.pc {
 }
 
 .pc-poem-row.is-archived {
-  opacity: 0.45;
+  opacity: 0.4;
   border-left-color: #403848;
 }
 
+.pc-poem-row.is-chapped {
+  border-left-color: #506848;
+}
+
+.pc-poem-row.is-chapped .pc-poem-sub {
+  color: #708868;
+}
+
 .pc-poem-id {
-  font-size: 0.55rem;
+  font-size: 0.5rem;
   color: var(--hot);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
+  opacity: 0.9;
+}
+
+.pc-poem-main {
+  min-width: 0;
 }
 
 .pc-poem-name {
   font-family: var(--serif);
-  font-size: 1rem;
+  font-size: 0.88rem;
   color: var(--cream);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pc-poem-sub {
-  font-size: 0.55rem;
+  font-size: 0.48rem;
   color: var(--mute);
-  margin-top: 0.15rem;
+  margin-top: 0.08rem;
+  letter-spacing: 0.02em;
 }
 
 .pc-poem-tags {
-  font-size: 0.5rem;
+  font-size: 0.45rem;
   color: #a08098;
   text-align: right;
   max-width: 8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* chapbook cards */
@@ -371,6 +411,37 @@ body.pc {
   letter-spacing: 0.08em;
   color: #8a6878;
   margin-bottom: 0.25rem;
+}
+
+.pc-sheet-tools {
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.2rem;
+  display: flex;
+  gap: 0.1rem;
+  z-index: 2;
+}
+
+.pc-sheet-move {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  line-height: 1;
+  padding: 0.12rem 0.28rem;
+  border: 1px solid #c4b8a8;
+  background: rgba(255, 255, 255, 0.75);
+  color: #3a2c34;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.pc-sheet-move:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.pc-sheet-move:not(:disabled):hover {
+  background: #fff;
+  border-color: #8a6878;
 }
 
 .pc-sheet-title {

@@ -97,14 +97,76 @@
     return t.slice(0, n) + "…";
   }
 
+  /** poem ids used in any chapbook */
+  function chappedIds() {
+    const set = new Set();
+    (lib.chapbooks || []).forEach((b) => {
+      (b.sections || []).forEach((s) => {
+        (s.poem_ids || []).forEach((id) => set.add(id));
+      });
+    });
+    return set;
+  }
+
+  /** poem ids already in the open book (any section) */
+  function idsInBook(bookId) {
+    const set = new Set();
+    const b = bookById(bookId);
+    if (!b) return set;
+    (b.sections || []).forEach((s) => {
+      (s.poem_ids || []).forEach((id) => set.add(id));
+    });
+    return set;
+  }
+
+  function fillAuthorFilter() {
+    const sel = $("poolAuthor");
+    if (!sel) return;
+    const cur = sel.value;
+    const authors = [
+      ...new Set(
+        (lib.poems || [])
+          .map((p) => (p.author || "").trim())
+          .filter(Boolean)
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+    sel.innerHTML =
+      `<option value="">all authors</option>` +
+      authors
+        .map((a) => `<option value="${escAttr(a)}">${escText(a)}</option>`)
+        .join("");
+    if (authors.includes(cur)) sel.value = cur;
+  }
+
+  function escAttr(s) {
+    return String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+  function escText(s) {
+    return String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;");
+  }
+
   /* ── pool ─────────────────────────────────────────────── */
   function renderPool() {
     const q = ($("poolSearch").value || "").trim().toLowerCase();
     const showArch = $("poolShowArchived").checked;
+    const unchappedOnly = $("poolUnchapped") && $("poolUnchapped").checked;
+    const authorF = ($("poolAuthor") && $("poolAuthor").value) || "";
     const list = $("poolList");
     list.innerHTML = "";
+    const chapped = chappedIds();
     let poems = (lib.poems || []).slice();
     if (!showArch) poems = poems.filter((p) => !p.archived);
+    if (unchappedOnly) poems = poems.filter((p) => !chapped.has(p.id));
+    if (authorF) {
+      poems = poems.filter(
+        (p) => (p.author || "").trim() === authorF
+      );
+    }
     if (q) {
       poems = poems.filter((p) => {
         const blob = [
@@ -122,22 +184,34 @@
     poems.sort((a, b) =>
       String(a.title || "").localeCompare(String(b.title || ""))
     );
+    const total = (lib.poems || []).filter((p) => !p.archived || showArch).length;
+    if ($("poolCount")) {
+      $("poolCount").textContent =
+        poems.length === total
+          ? `${total} poem${total === 1 ? "" : "s"}`
+          : `${poems.length} shown · ${total} total`;
+    }
     if (!poems.length) {
       list.innerHTML =
-        '<div class="pc-empty">no poems yet · + POEM · or import later by hand</div>';
+        '<div class="pc-empty">no poems match · loosen filters · + POEM</div>';
       return;
     }
     poems.forEach((p) => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "pc-poem-row" + (p.archived ? " is-archived" : "");
+      const inBook = chapped.has(p.id);
+      btn.className =
+        "pc-poem-row" +
+        (p.archived ? " is-archived" : "") +
+        (inBook ? " is-chapped" : "");
       const tags = (p.tags || []).join(" · ");
-      btn.innerHTML = `<span class="pc-poem-id"></span><span><div class="pc-poem-name"></div><div class="pc-poem-sub"></div></span><span class="pc-poem-tags"></span>`;
+      btn.innerHTML = `<span class="pc-poem-id"></span><span class="pc-poem-main"><div class="pc-poem-name"></div><div class="pc-poem-sub"></div></span><span class="pc-poem-tags"></span>`;
       btn.querySelector(".pc-poem-id").textContent = p.chip || p.id;
       btn.querySelector(".pc-poem-name").textContent = p.title || "(untitled)";
       btn.querySelector(".pc-poem-sub").textContent = [
         p.author || "—",
         p.created ? p.created.slice(0, 10) : "",
+        inBook ? "in a book" : "",
         p.archived ? "archived" : "",
       ]
         .filter(Boolean)
@@ -378,10 +452,12 @@
           sheet.addEventListener("drop", (ev) => {
             ev.preventDefault();
             ev.stopPropagation();
-            handleDrop(sec.id, pid);
+            const rect = sheet.getBoundingClientRect();
+            const after = ev.clientX > rect.left + rect.width / 2;
+            handleDrop(sec.id, pid, after ? "after" : "before");
           });
 
-          // pen-friendly pointer reorder: long-press free drag within section
+          // pen-friendly pointer reorder
           bindSheetPointerDrag(sheet, sec, pid);
 
           const num = document.createElement("div");
@@ -401,6 +477,32 @@
             renderEditor();
           });
           sheet.appendChild(x);
+
+          const tools = document.createElement("div");
+          tools.className = "pc-sheet-tools";
+          const up = document.createElement("button");
+          up.type = "button";
+          up.className = "pc-sheet-move";
+          up.textContent = "↑";
+          up.title = "move earlier";
+          up.disabled = i === 0;
+          up.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            moveSheet(sec.id, pid, -1);
+          });
+          const down = document.createElement("button");
+          down.type = "button";
+          down.className = "pc-sheet-move";
+          down.textContent = "↓";
+          down.title = "move later";
+          down.disabled = i === ids.length - 1;
+          down.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            moveSheet(sec.id, pid, 1);
+          });
+          tools.appendChild(up);
+          tools.appendChild(down);
+          sheet.appendChild(tools);
 
           const t = document.createElement("div");
           t.className = "pc-sheet-title";
@@ -424,11 +526,33 @@
     });
   }
 
-  function handleDrop(toSectionId, beforePoemId) {
+  function moveSheet(sectionId, poemId, delta) {
+    const b = bookById(openBookId);
+    if (!b) return;
+    const sec = (b.sections || []).find((s) => s.id === sectionId);
+    if (!sec || !sec.poem_ids) return;
+    const ids = sec.poem_ids;
+    const i = ids.indexOf(poemId);
+    if (i < 0) return;
+    const j = i + delta;
+    if (j < 0 || j >= ids.length) return;
+    const tmp = ids[i];
+    ids[i] = ids[j];
+    ids[j] = tmp;
+    scheduleSave();
+    renderEditor();
+  }
+
+  /**
+   * @param {string} toSectionId
+   * @param {string|null} anchorPoemId drop relative to this sheet
+   * @param {"before"|"after"} [place]
+   */
+  function handleDrop(toSectionId, anchorPoemId, place) {
     const b = bookById(openBookId);
     if (!b || !dragPoemId) return;
     const poemId = dragPoemId;
-    const fromId = dragFromSectionId;
+    place = place || "before";
 
     // remove from all sections first
     (b.sections || []).forEach((s) => {
@@ -438,8 +562,9 @@
     const toSec = (b.sections || []).find((s) => s.id === toSectionId);
     if (!toSec) return;
     if (!toSec.poem_ids) toSec.poem_ids = [];
-    if (beforePoemId && toSec.poem_ids.includes(beforePoemId)) {
-      const idx = toSec.poem_ids.indexOf(beforePoemId);
+    if (anchorPoemId && toSec.poem_ids.includes(anchorPoemId)) {
+      let idx = toSec.poem_ids.indexOf(anchorPoemId);
+      if (place === "after") idx += 1;
       toSec.poem_ids.splice(idx, 0, poemId);
     } else {
       toSec.poem_ids.push(poemId);
@@ -489,9 +614,12 @@
         const targetSheet = el && el.closest(".pc-sheet");
         const targetZone = el && el.closest(".pc-sheets");
         if (targetSheet && targetSheet.dataset.poemId !== poemId) {
+          const rect = targetSheet.getBoundingClientRect();
+          const after = ev.clientX > rect.left + rect.width / 2;
           handleDrop(
             targetSheet.dataset.sectionId,
-            targetSheet.dataset.poemId
+            targetSheet.dataset.poemId,
+            after ? "after" : "before"
           );
         } else if (targetZone) {
           handleDrop(targetZone.dataset.sectionId, null);
@@ -515,9 +643,15 @@
     pickSectionId = sectionId;
     const list = $("pickList");
     list.innerHTML = "";
-    const poems = (lib.poems || []).filter((p) => !p.archived);
+    const already = idsInBook(openBookId);
+    const poems = (lib.poems || []).filter(
+      (p) => !p.archived && !already.has(p.id)
+    );
     if (!poems.length) {
-      list.innerHTML = '<div class="pc-empty">pool empty · make poems first</div>';
+      list.innerHTML =
+        already.size > 0
+          ? '<div class="pc-empty">all non-archived poems are already in this chapbook</div>'
+          : '<div class="pc-empty">pool empty · make poems first</div>';
     } else {
       poems
         .slice()
@@ -540,7 +674,8 @@
             if (!sec.poem_ids) sec.poem_ids = [];
             if (!sec.poem_ids.includes(p.id)) sec.poem_ids.push(p.id);
             scheduleSave();
-            $("pickModal").hidden = true;
+            // stay open so you can add several — list shrinks as you go
+            openPick(pickSectionId);
             renderEditor();
           });
           list.appendChild(btn);
@@ -551,8 +686,10 @@
 
   function render() {
     if (!lib) return;
-    if (view === "pool") renderPool();
-    else if (view === "books") renderBooks();
+    if (view === "pool") {
+      fillAuthorFilter();
+      renderPool();
+    } else if (view === "books") renderBooks();
     else if (view === "editor") renderEditor();
   }
 
@@ -619,6 +756,13 @@
       $("pickModal").hidden = true;
     });
 
+    if ($("poolAuthor")) {
+      $("poolAuthor").addEventListener("change", () => renderPool());
+    }
+    if ($("poolUnchapped")) {
+      $("poolUnchapped").addEventListener("change", () => renderPool());
+    }
+
     try {
       await load();
     } catch (e) {
@@ -626,6 +770,7 @@
       toast("failed to load library");
       return;
     }
+    fillAuthorFilter();
     setView("pool");
   }
 

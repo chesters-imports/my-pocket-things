@@ -14,7 +14,123 @@
   let pageIdx = 0;
   let editing = false;
   let dirty = false;
+  /** where to put the caret when entering edit: "title" | "body" */
+  let editFocus = "title";
   let tocOpen = true;
+  /** 'soft' = spellcheck on + pale squiggles; 'off' = no browser spell (slug / format pages) */
+  let spellMode = "soft";
+  try {
+    const sp = localStorage.getItem("pn-spell-mode");
+    if (sp === "off" || sp === "soft") spellMode = sp;
+  } catch (e) {
+    /* ignore */
+  }
+
+  /**
+   * Session · localStorage pn-session-v1
+   * openId: book you were inside when the app closed (null = shelf)
+   * books[id]: last page + scroll for that notebook (ribbon / place-keeper)
+   */
+  const SESSION_KEY = "pn-session-v1";
+  /** @type {{ scroll?: number }|null} */
+  let pendingRestore = null;
+  let scrollSaveTimer = 0;
+
+  function readSession() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) return {};
+      const j = JSON.parse(raw);
+      if (!j || typeof j !== "object") return {};
+      if (!j.books || typeof j.books !== "object") j.books = {};
+      return j;
+    } catch (e) {
+      return { books: {} };
+    }
+  }
+
+  function writeSession(patch) {
+    try {
+      const cur = readSession();
+      const next = Object.assign({}, cur, patch, { t: Date.now() });
+      if (patch.books) {
+        next.books = Object.assign({}, cur.books || {}, patch.books);
+      } else if (!next.books) {
+        next.books = cur.books || {};
+      }
+      localStorage.setItem(SESSION_KEY, JSON.stringify(next));
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function bookPlace(id) {
+    const books = readSession().books || {};
+    const p = books[id];
+    if (!p || typeof p !== "object") return { pageIdx: 0, scroll: 0 };
+    return {
+      pageIdx: Number(p.pageIdx) || 0,
+      scroll: Number(p.scroll) || 0,
+    };
+  }
+
+  function saveSessionNow() {
+    const body = $("pageBody");
+    const scroll =
+      openId && body && typeof body.scrollTop === "number" ? body.scrollTop : 0;
+    const patch = {
+      openId: openId,
+      tocOpen: tocOpen,
+    };
+    if (openId) {
+      patch.books = {
+        [openId]: { pageIdx: pageIdx, scroll: scroll },
+      };
+    }
+    writeSession(patch);
+  }
+
+  function scheduleSaveSession() {
+    clearTimeout(scrollSaveTimer);
+    scrollSaveTimer = setTimeout(saveSessionNow, 120);
+  }
+
+  let scrollUiTimer = 0;
+  function bindPageScrollSave() {
+    const body = $("pageBody");
+    if (!body || !openId) return;
+    body.addEventListener(
+      "scroll",
+      () => {
+        scheduleSaveSession();
+        /* spool bar only while scrolling */
+        body.classList.add("is-scrolling");
+        body.classList.remove("is-scroll-fade");
+        clearTimeout(scrollUiTimer);
+        scrollUiTimer = setTimeout(() => {
+          body.classList.add("is-scroll-fade");
+          clearTimeout(scrollUiTimer);
+          scrollUiTimer = setTimeout(() => {
+            body.classList.remove("is-scrolling");
+            body.classList.remove("is-scroll-fade");
+          }, 320);
+        }, 550);
+      },
+      { passive: true }
+    );
+  }
+
+  function applyPendingScroll() {
+    if (pendingRestore == null || pendingRestore.scroll == null) return;
+    const y = Number(pendingRestore.scroll) || 0;
+    pendingRestore = null;
+    const body = $("pageBody");
+    if (!body) return;
+    requestAnimationFrame(() => {
+      body.scrollTop = y;
+      scheduleSaveSession();
+    });
+  }
 
   function toast(msg) {
     const el = $("toast");
@@ -218,10 +334,7 @@
   }
 
   async function movePage(fromIdx, toIdx) {
-    if (editing) {
-      toast("save or cancel edit first");
-      return;
-    }
+    if (!(await confirmLeavePaper())) return;
     const nb = notebook(openId);
     if (!nb) return;
     const pages = pagesOf(nb);
@@ -249,9 +362,11 @@
   }
 
   async function cycleMark() {
-    if (editing) {
-      toast("save or cancel edit first");
-      return;
+    if (editing && dirty) {
+      if (!(await confirmLeavePaper())) return;
+    } else if (editing) {
+      editing = false;
+      dirty = false;
     }
     const nb = notebook(openId);
     if (!nb) return;
@@ -274,7 +389,12 @@
   }
 
   async function setMark(mark) {
-    if (editing) return;
+    if (editing && dirty) {
+      if (!(await confirmLeavePaper())) return;
+    } else if (editing) {
+      editing = false;
+      dirty = false;
+    }
     const nb = notebook(openId);
     if (!nb) return;
     const pages = pagesOf(nb);
@@ -322,46 +442,230 @@
     else renderShelf();
   }
 
+  function bookCoverHtml(nb, opts) {
+    opts = opts || {};
+    const large = !!opts.large;
+    const n = pagesOf(nb).length;
+    const fill = Math.max(0.04, Math.min(1, (n - 1) / 30 + 0.04));
+    const labelTilt = ((n * 3 + String(nb.id || "").length) % 7) * 0.12 - 0.35;
+    const wrapCls = large ? "pn-book-wrap is-recent" : "pn-book-wrap";
+    return (
+      `<div class="${wrapCls}">` +
+      `<button type="button" class="pn-book ${large ? "is-recent-book" : ""} cloth-${esc(
+        clothClass(nb.cloth)
+      )}" data-id="${esc(nb.id)}" title="${esc(whisperTitle(nb, n))}" style="--pg-fill: ${fill}; --pg-n: ${n};">` +
+      `<span class="pn-book-block" aria-hidden="true">` +
+      `<span class="pn-book-pages"></span>` +
+      `<span class="pn-book-spine"></span>` +
+      `</span>` +
+      `<span class="pn-book-plate" aria-hidden="true" style="--label-tilt: ${labelTilt.toFixed(2)}deg;">` +
+      `<span class="pn-book-title">${esc(nb.title || "untitled")}</span>` +
+      `<span class="pn-book-count">${n} page${n === 1 ? "" : "s"}</span>` +
+      `</span>` +
+      `</button>` +
+      `<button type="button" class="pn-book-gear" data-edit="${esc(
+        nb.id
+      )}" title="Name & cover">✎</button>` +
+      `</div>`
+    );
+  }
+
+  const SHELF_ORDER_KEY = "pn-shelf-order-v1";
+
+  function readShelfOrder() {
+    try {
+      const a = JSON.parse(localStorage.getItem(SHELF_ORDER_KEY) || "[]");
+      return Array.isArray(a) ? a.filter((x) => typeof x === "string") : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function writeShelfOrder(ids) {
+    try {
+      localStorage.setItem(SHELF_ORDER_KEY, JSON.stringify(ids));
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  /** Library spines in your order (drag-drop); new books append. */
+  function orderedBooks() {
+    const books = lib.notebooks || [];
+    const byId = {};
+    books.forEach((nb) => {
+      if (nb && nb.id) byId[nb.id] = nb;
+    });
+    const out = [];
+    const seen = {};
+    readShelfOrder().forEach((id) => {
+      if (byId[id] && !seen[id]) {
+        out.push(byId[id]);
+        seen[id] = true;
+      }
+    });
+    books.forEach((nb) => {
+      if (nb && nb.id && !seen[nb.id]) {
+        out.push(nb);
+        seen[nb.id] = true;
+      }
+    });
+    return out;
+  }
+
+  function bookSpineHtml(nb) {
+    const n = pagesOf(nb).length;
+    const title = (nb.title || "untitled").trim() || "untitled";
+    const short =
+      title.length > 22 ? title.slice(0, 20).toUpperCase() + "…" : title.toUpperCase();
+    return (
+      `<div class="pn-spine-wrap" draggable="true" data-spine-id="${esc(nb.id)}">` +
+      `<button type="button" class="pn-spine cloth-${esc(
+        clothClass(nb.cloth)
+      )}" data-id="${esc(nb.id)}" title="${esc(
+        whisperTitle(nb, n) + " · drag to rearrange"
+      )}">` +
+      `<span class="pn-spine-label">${esc(short)}</span>` +
+      `</button>` +
+      `<button type="button" class="pn-book-gear pn-spine-gear" data-edit="${esc(
+        nb.id
+      )}" title="Name & cover">✎</button>` +
+      `</div>`
+    );
+  }
+
+  function recentNotebooks(books, maxN) {
+    maxN = maxN || 4;
+    const byId = {};
+    books.forEach((nb) => {
+      if (nb && nb.id) byId[nb.id] = nb;
+    });
+    const lo = Array.isArray(lib.lastOpened) ? lib.lastOpened : [];
+    const out = [];
+    const seen = {};
+    lo.forEach((id) => {
+      if (out.length >= maxN) return;
+      if (byId[id] && !seen[id]) {
+        out.push(byId[id]);
+        seen[id] = true;
+      }
+    });
+    books.forEach((nb) => {
+      if (out.length >= maxN) return;
+      if (nb && nb.id && !seen[nb.id]) {
+        out.push(nb);
+        seen[nb.id] = true;
+      }
+    });
+    return out;
+  }
+
+  function bindSpineDrag(bay) {
+    if (!bay) return;
+    let dragId = null;
+    let suppressClick = false;
+    const clearDrop = () => {
+      bay.querySelectorAll(".pn-spine-wrap.is-drop").forEach((w) => {
+        w.classList.remove("is-drop");
+      });
+    };
+    bay.querySelectorAll(".pn-spine-wrap[data-spine-id]").forEach((wrap) => {
+      wrap.addEventListener("dragstart", (ev) => {
+        dragId = wrap.getAttribute("data-spine-id");
+        wrap.classList.add("is-dragging");
+        try {
+          ev.dataTransfer.setData("text/plain", dragId || "");
+          ev.dataTransfer.effectAllowed = "move";
+        } catch (e) {
+          /* ignore */
+        }
+      });
+      wrap.addEventListener("dragend", () => {
+        wrap.classList.remove("is-dragging");
+        clearDrop();
+        dragId = null;
+        suppressClick = true;
+        setTimeout(() => {
+          suppressClick = false;
+        }, 40);
+      });
+      wrap.addEventListener("dragover", (ev) => {
+        ev.preventDefault();
+        if (!dragId || wrap.getAttribute("data-spine-id") === dragId) return;
+        clearDrop();
+        wrap.classList.add("is-drop");
+      });
+      wrap.addEventListener("drop", (ev) => {
+        ev.preventDefault();
+        const targetId = wrap.getAttribute("data-spine-id");
+        if (!dragId || !targetId || dragId === targetId) return;
+        const ids = orderedBooks().map((b) => b.id);
+        const from = ids.indexOf(dragId);
+        const to = ids.indexOf(targetId);
+        if (from < 0 || to < 0) return;
+        ids.splice(from, 1);
+        ids.splice(to, 0, dragId);
+        writeShelfOrder(ids);
+        renderShelf();
+      });
+    });
+    bay.querySelectorAll(".pn-spine[data-id]").forEach((btn) => {
+      btn.addEventListener("click", (ev) => {
+        if (suppressClick) {
+          ev.preventDefault();
+          return;
+        }
+        openBook(btn.getAttribute("data-id"));
+      });
+    });
+  }
+
   function renderShelf() {
     editing = false;
     dirty = false;
-    hint.textContent = "shelf · pick a cloth book";
-    setKeys("N new · click to open");
-    const books = lib.notebooks || [];
+    hint.textContent = "last opened · library spines · drag to arrange";
+    setKeys("N new · click open · drag spines");
+    const books = orderedBooks();
+    // IDA04: max 3 large recents; + NEW lives on spine shelf
+    const recents = recentNotebooks(books, 3);
+    const recentHtml = recents.length
+      ? recents.map((nb) => bookCoverHtml(nb, { large: true })).join("")
+      : `<div class="pn-shelf-empty">No notebooks yet — + NEW on the shelf below</div>`;
+    // Chunk spines onto real shelf planks (sit ON the lip, not over it)
+    const PER_SHELF = 12;
+    const chunks = [];
+    for (let i = 0; i < books.length; i += PER_SHELF) {
+      chunks.push(books.slice(i, i + PER_SHELF));
+    }
+    if (!chunks.length) chunks.push([]);
+    const shelvesHtml = chunks
+      .map((chunk, si) => {
+        const last = si === chunks.length - 1;
+        return (
+          `<div class="pn-spine-plank" data-plank="${si}">` +
+          `<div class="pn-spine-rail" data-rail="${si}">` +
+          chunk.map((nb) => bookSpineHtml(nb)).join("") +
+          (last
+            ? `<button type="button" class="pn-spine-new" id="btnNewNb" title="New notebook">+ NEW</button>`
+            : "") +
+          `</div>` +
+          `<div class="pn-spine-lip" aria-hidden="true"></div>` +
+          `</div>`
+        );
+      })
+      .join("");
+
     stage.innerHTML =
       `<div class="pn-shelf">` +
-      `<h1 class="pn-shelf-title">Pocket notebooks</h1>` +
-      `<div class="pn-shelf-sub">MYPOCKET</div>` +
-      `<div class="pn-shelf-row" id="shelfRow">` +
-      books
-        .map((nb) => {
-          const n = pagesOf(nb).length;
-          // modest bulk: 1 page = hairline; denser books thicken slowly (cap ~30)
-          const fill = Math.max(0.04, Math.min(1, (n - 1) / 30 + 0.04));
-          const labelTilt = ((n * 3 + String(nb.id || "").length) % 7) * 0.12 - 0.35;
-          return (
-            `<div class="pn-book-wrap">` +
-            `<button type="button" class="pn-book cloth-${esc(
-              clothClass(nb.cloth)
-            )}" data-id="${esc(nb.id)}" title="${esc(whisperTitle(nb, n))}" style="--pg-fill: ${fill}; --pg-n: ${n};">` +
-            `<span class="pn-book-block" aria-hidden="true">` +
-            `<span class="pn-book-pages"></span>` +
-            `<span class="pn-book-spine"></span>` +
-            `</span>` +
-            `<span class="pn-book-plate" aria-hidden="true" style="--label-tilt: ${labelTilt.toFixed(2)}deg;">` +
-            `<span class="pn-book-title">${esc(nb.title || "untitled")}</span>` +
-            `<span class="pn-book-count">${n} page${n === 1 ? "" : "s"}</span>` +
-            `</span>` +
-            `</button>` +
-            `<button type="button" class="pn-book-gear" data-edit="${esc(
-              nb.id
-            )}" title="Name & cover">✎</button>` +
-            `</div>`
-          );
-        })
-        .join("") +
-      `<button type="button" class="pn-book pn-book-new" id="btnNewNb">+ NEW</button>` +
-      `</div></div>`;
+      `<div class="pn-zone-lab">Last opened</div>` +
+      `<div class="pn-shelf-row pn-shelf-recents" id="shelfRecents">` +
+      recentHtml +
+      `</div>` +
+      `<div class="pn-zone-lab pn-zone-lab-shelf">Library · spines · drag</div>` +
+      `<div class="pn-spine-bay" id="spineBay" aria-label="Library shelves">` +
+      shelvesHtml +
+      `</div>` +
+      `</div>`;
 
     stage.querySelectorAll(".pn-book[data-id]").forEach((btn) => {
       btn.addEventListener("click", () => openBook(btn.getAttribute("data-id")));
@@ -372,7 +676,10 @@
         openBookMeta(btn.getAttribute("data-edit"));
       });
     });
-    $("btnNewNb").onclick = () => newNotebook();
+    // drag across the whole bay (all planks)
+    bindSpineDrag($("spineBay"));
+    const newBtn = $("btnNewNb");
+    if (newBtn) newBtn.onclick = () => newNotebook();
   }
 
   /** Rename + cloth cover (stickers later) */
@@ -482,6 +789,11 @@
     };
     lib.notebooks.push(nb);
     try {
+      const ids = orderedBooks().map((b) => b.id);
+      if (!ids.includes(nb.id)) {
+        ids.push(nb.id);
+        writeShelfOrder(ids);
+      }
       await persist();
       toast("new notebook");
       openBook(nb.id);
@@ -491,24 +803,139 @@
     }
   }
 
-  function openBook(id) {
+  function touchLastOpened(id) {
+    if (!lib || !id) return;
+    let lo = Array.isArray(lib.lastOpened) ? lib.lastOpened.slice() : [];
+    lo = lo.filter((x) => x && x !== id);
+    lo.unshift(id);
+    lib.lastOpened = lo.slice(0, 8);
+  }
+
+  function openBook(id, opts) {
+    opts = opts || {};
     const nb = notebook(id);
     if (!nb) return;
     openId = id;
-    pageIdx = 0;
+    const pages = pagesOf(nb);
+    // Per-book place: last page/scroll inside this notebook (shelf open or cold start)
+    const place = bookPlace(id);
+    let wantPage =
+      opts.pageIdx != null && opts.pageIdx >= 0 ? opts.pageIdx : place.pageIdx;
+    pageIdx = Math.min(
+      Math.max(0, wantPage),
+      Math.max(0, pages.length - 1)
+    );
+    const wantScroll =
+      opts.scroll != null ? opts.scroll : place.scroll != null ? place.scroll : 0;
     editing = false;
     dirty = false;
+    touchLastOpened(id);
+    persist().catch(() => {});
+    pendingRestore = { scroll: Number(wantScroll) || 0 };
     renderOpen();
+    saveSessionNow();
   }
 
-  function closeBook() {
-    if (editing && dirty) {
-      if (!confirm("Leave without saving this page?")) return;
-    }
+  async function closeBook() {
+    if (!(await confirmLeavePaper())) return;
+    // Keep books[id] place; only leave the desk (openId null = shelf)
+    saveSessionNow();
     openId = null;
     editing = false;
     dirty = false;
+    writeSession({ openId: null, tocOpen: tocOpen });
     renderShelf();
+  }
+
+  /**
+   * Library slip (cute modal) — not window.confirm.
+   * returns "ok" | "cancel" (and optional third later)
+   */
+  function librarySlip(opts) {
+    opts = opts || {};
+    return new Promise((resolve) => {
+      const overlay = document.createElement("div");
+      overlay.className = "pn-slip";
+      overlay.innerHTML =
+        `<div class="pn-slip-card" role="dialog" aria-modal="true" aria-label="${esc(
+          opts.title || "Library"
+        )}">` +
+        `<div class="pn-slip-stamp">${esc(opts.stamp || "LIBRARY DESK")}</div>` +
+        `<div class="pn-slip-h">${esc(opts.title || "A moment")}</div>` +
+        `<p class="pn-slip-body">${esc(
+          opts.body || ""
+        )}</p>` +
+        `<div class="pn-slip-actions">` +
+        `<button type="button" id="slipCancel">${esc(
+          opts.cancelLabel || "Stay"
+        )}</button>` +
+        `<button type="button" class="primary" id="slipOk">${esc(
+          opts.okLabel || "Continue"
+        )}</button>` +
+        `</div></div>`;
+      document.body.appendChild(overlay);
+      const onKey = (ev) => {
+        if (ev.key === "Escape") {
+          ev.preventDefault();
+          done(false);
+        } else if (ev.key === "Enter" && !ev.shiftKey) {
+          ev.preventDefault();
+          done(true);
+        }
+      };
+      const done = (val) => {
+        document.removeEventListener("keydown", onKey, true);
+        overlay.remove();
+        resolve(val);
+      };
+      overlay.querySelector("#slipOk").onclick = () => done(true);
+      overlay.querySelector("#slipCancel").onclick = () => done(false);
+      overlay.addEventListener("click", (ev) => {
+        if (ev.target === overlay) done(false);
+      });
+      document.addEventListener("keydown", onKey, true);
+      setTimeout(() => {
+        const b = overlay.querySelector("#slipOk");
+        if (b) b.focus();
+      }, 0);
+    });
+  }
+
+  /**
+   * Leaving the page while editing — wet ink?
+   * Save & go · Stay writing
+   */
+  async function confirmLeavePaper() {
+    if (!editing) return true;
+    if (dirty) {
+      const ok = await librarySlip({
+        stamp: "PAPERS, PLEASE",
+        title: "Wet ink",
+        body:
+          "This paper still has wet ink.\n\nSave it before you leave the page — or stay and keep writing.",
+        okLabel: "Save & go",
+        cancelLabel: "Stay writing",
+      });
+      if (!ok) return false;
+      const saved = await savePage({ skipRender: true });
+      if (!saved) return false;
+    }
+    editing = false;
+    dirty = false;
+    return true;
+  }
+
+  async function goToPage(i) {
+    const n = pagesOf(notebook(openId) || { pages: [] }).length;
+    if (i < 0 || i >= n) return;
+    if (i === pageIdx && !editing) return;
+    if (!(await confirmLeavePaper())) return;
+    pageIdx = i;
+    pendingRestore = null;
+    editing = false;
+    dirty = false;
+    renderOpen();
+    saveSessionNow();
   }
 
   function renderOpen() {
@@ -539,11 +966,11 @@
 
     hint.textContent = editing
       ? "editing · Ctrl+S save · Esc cancel"
-      : "open book · TOC · marks · reorder";
+      : "double-click or E · B bookmark · ← → pages";
     setKeys(
       editing
-        ? "Ctrl+S save · Esc cancel"
-        : "← → · T toc · B mark · Alt↑↓ reorder · E edit · N page · Esc shelf"
+        ? "Ctrl+S · Esc cancel · B mark"
+        : "← → · T toc · B mark · E edit · N page · Esc shelf"
     );
 
     const tocHtml = tocOpen
@@ -561,22 +988,21 @@
             const mk = markClass(p.mark);
             return (
               `<div class="pn-toc-row ${i === pageIdx ? "is-on" : ""}" data-i="${i}">` +
-              `<button type="button" class="pn-toc-item" data-i="${i}" ${
-                editing ? "disabled" : ""
-              }>` +
+              `<button type="button" class="pn-toc-item" data-i="${i}" title="${esc(
+                t || "untitled"
+              )}">` +
               `<span class="pn-toc-mark ${mk ? "mark-" + esc(mk) : "is-empty"}" aria-hidden="true"></span>` +
               `<span class="pn-toc-n">${i + 1}</span>` +
-              `<span class="pn-toc-dots" aria-hidden="true"></span>` +
               `<span class="pn-toc-t ${t ? "" : "is-blank"}">${esc(
                 t || "untitled"
               )}</span>` +
               `</button>` +
               `<span class="pn-toc-move">` +
               `<button type="button" class="pn-toc-up" data-i="${i}" title="Move up" ${
-                editing || i === 0 ? "disabled" : ""
+                i === 0 ? "disabled" : ""
               }>↑</button>` +
               `<button type="button" class="pn-toc-dn" data-i="${i}" title="Move down" ${
-                editing || i >= n - 1 ? "disabled" : ""
+                i >= n - 1 ? "disabled" : ""
               }>↓</button>` +
               `</span>` +
               `</div>`
@@ -586,52 +1012,45 @@
         `</div></div></aside>`
       : "";
 
-    const markBar =
-      !editing
-        ? `<div class="pn-marks" role="group" aria-label="Page bookmark">` +
-          MARKS.filter(Boolean)
-            .map(
-              (m) =>
-                `<button type="button" class="pn-mark-swatch mark-${esc(m)} ${
-                  curMark === m ? "is-on" : ""
-                }" data-mark="${esc(m)}" title="Bookmark ${esc(m)}"></button>`
-            )
-            .join("") +
-          `<button type="button" class="pn-mark-clear ${
-            !curMark ? "is-on" : ""
-          }" data-mark="" title="Clear bookmark">×</button>` +
-          `</div>`
-        : "";
+    /* color dots only while editing — B still cycles in read mode */
+    const markBar = editing
+      ? `<div class="pn-marks" role="group" aria-label="Page bookmark">` +
+        MARKS.filter(Boolean)
+          .map(
+            (m) =>
+              `<button type="button" class="pn-mark-swatch mark-${esc(m)} ${
+                curMark === m ? "is-on" : ""
+              }" data-mark="${esc(m)}" title="Bookmark ${esc(m)}"></button>`
+          )
+          .join("") +
+        `<button type="button" class="pn-mark-clear ${
+          !curMark ? "is-on" : ""
+        }" data-mark="" title="Clear bookmark">×</button>` +
+        `</div>`
+      : "";
 
     const cloth = clothClass(nb.cloth);
 
+    // CHG05: drop dual chrome header — cover band is title; ← SHELF by scrub
     stage.innerHTML =
       `<div class="pn-open">` +
-      `<div class="pn-open-head">` +
-      `<button type="button" class="pn-open-back" id="btnShelf">← SHELF</button>` +
-      `<h2 class="pn-open-title" id="btnBookMeta" title="Rename & cover">${esc(
-        nb.title
-      )}</h2>` +
-      `<button type="button" class="pn-open-back" id="btnBookGear" title="Rename & cover">✎</button>` +
-      `<button type="button" class="pn-open-back" id="btnToc" title="Table of contents">` +
-      (tocOpen ? "TOC ·" : "TOC") +
-      `</button>` +
-      `<span class="pn-open-meta">${n} page${n === 1 ? "" : "s"}</span>` +
-      `</div>` +
-      /* open cover shell — grounds floating paper in cloth + beading */
       `<div class="pn-cover cloth-${esc(cloth)}">` +
       `<div class="pn-cover-bead" aria-hidden="true"></div>` +
       `<div class="pn-cover-band">` +
       `<span class="pn-cover-band-title" id="btnCoverTitle" title="Rename & cover">${esc(
         nb.title || "untitled"
       )}</span>` +
+      `<button type="button" class="pn-cover-band-btn" id="btnBookGear" title="Rename & cover">✎</button>` +
+      `<button type="button" class="pn-cover-band-btn" id="btnToc" title="Table of contents">` +
+      (tocOpen ? "TOC ·" : "TOC") +
+      `</button>` +
       `<span class="pn-cover-band-meta">${n} pg</span>` +
       `</div>` +
       `<div class="pn-cover-well">` +
       `<div class="pn-spread">` +
       tocHtml +
       `<button type="button" class="pn-nav" id="btnPrev" ${
-        pageIdx <= 0 || editing ? "disabled" : ""
+        pageIdx <= 0 ? "disabled" : ""
       } aria-label="Previous page">‹</button>` +
       `<article class="pn-page ${editing ? "is-edit" : ""} ${
         curMark ? "has-mark mark-" + esc(curMark) : ""
@@ -643,101 +1062,110 @@
           )}" title="Bookmark · B to cycle" aria-hidden="true"></span>`
         : "") +
       `<div class="pn-page-inner">` +
-      `<div class="pn-page-num">PAGE ${pageIdx + 1} / ${n}</div>` +
+      `<div class="pn-page-rail">` +
       `<h3 class="pn-page-title" id="pageTitle" ${
-        editing ? 'contenteditable="true" spellcheck="true"' : ""
+        editing
+          ? `contenteditable="true" spellcheck="${
+              spellMode === "soft" ? "true" : "false"
+            }"`
+          : ""
       }>${esc(pg.title || "")}</h3>` +
+      `<div class="pn-page-num">PAGE ${pageIdx + 1} / ${n}</div>` +
+      `</div>` +
       (editing
-        ? `<div class="pn-page-body pn-page-body-edit" id="pageBody" contenteditable="true" spellcheck="true">${esc(
-            pg.body || ""
-          )}</div>` +
-          `<div class="pn-md-hint mono"># ** ++ \` - [ ] @</div>`
+        ? `<div class="pn-page-body pn-page-body-edit pn-spell-${esc(
+            spellMode
+          )}" id="pageBody" contenteditable="true" spellcheck="${
+            spellMode === "soft" ? "true" : "false"
+          }">${esc(pg.body || "")}</div>` +
+          `<div class="pn-md-hint mono"># ** ++ \` - [ ] @ · spell ${esc(
+            spellMode
+          )} · B bookmark · Ctrl+S</div>`
         : `<div class="pn-page-body pn-page-body-md" id="pageBody">${
             (pg.body || "").trim()
               ? renderMarkdown(pg.body)
-              : `<span class="pn-blank">blank page · E to write</span>`
+              : `<span class="pn-blank">blank page · double-click or E</span>`
           }</div>`) +
       `</div>` +
-      markBar +
-      `<div class="pn-edit-bar">` +
       (editing
-        ? `<button type="button" class="primary" id="btnSavePage">SAVE</button>` +
-          `<button type="button" id="btnCancelEdit">CANCEL</button>`
-        : `<button type="button" id="btnEdit">E · EDIT</button>` +
-          `<button type="button" id="btnMark" title="Cycle bookmark color">B · MARK</button>` +
-          `<button type="button" id="btnNewPage">+ PAGE</button>`) +
-      `</div>` +
+        ? markBar +
+          `<div class="pn-edit-bar is-on">` +
+          `<button type="button" class="primary" id="btnSavePage">SAVE</button>` +
+          `<button type="button" id="btnCancelEdit">CANCEL</button>` +
+          `<button type="button" id="btnSpell" title="Soft pale errors, or off for slug-heavy pages">SPELL · ${
+            spellMode === "soft" ? "SOFT" : "OFF"
+          }</button>` +
+          `<button type="button" id="btnNewPage">+ PAGE</button>` +
+          `<button type="button" id="btnDelPage" title="Remove this page from the book">− PAGE</button>` +
+          `</div>`
+        : "") +
       `</article>` +
       `<button type="button" class="pn-nav" id="btnNext" ${
-        pageIdx >= n - 1 || editing ? "disabled" : ""
+        pageIdx >= n - 1 ? "disabled" : ""
       } aria-label="Next page">›</button>` +
       `</div>` +
       `</div>` +
       `<div class="pn-cover-bead pn-cover-bead-bot" aria-hidden="true"></div>` +
       `</div>` +
       `<div class="pn-scrub">` +
+      `<button type="button" class="pn-scrub-shelf" id="btnShelf" title="Back to shelf">← SHELF</button>` +
       `<span class="pn-scrub-label">${pageIdx + 1}</span>` +
       `<input type="range" id="scrub" min="0" max="${Math.max(
         0,
         n - 1
-      )}" value="${pageIdx}" ${editing ? "disabled" : ""} />` +
+      )}" value="${pageIdx}" />` +
       `<span class="pn-scrub-label">${n}</span>` +
       `</div></div>`;
 
     $("btnShelf").onclick = () => closeBook();
-    const openMeta = () => {
-      if (editing) {
-        toast("save or cancel edit first");
-        return;
-      }
+    const openMeta = async () => {
+      if (!(await confirmLeavePaper())) return;
+      editing = false;
+      dirty = false;
       openBookMeta(openId);
     };
-    if ($("btnBookMeta")) $("btnBookMeta").onclick = openMeta;
     if ($("btnBookGear")) $("btnBookGear").onclick = openMeta;
     if ($("btnCoverTitle")) $("btnCoverTitle").onclick = openMeta;
     if ($("btnToc"))
-      $("btnToc").onclick = () => {
-        if (editing) return;
+      $("btnToc").onclick = async () => {
+        if (editing && dirty) {
+          if (!(await confirmLeavePaper())) return;
+          renderOpen();
+          return;
+        }
         tocOpen = !tocOpen;
+        saveSessionNow();
         renderOpen();
       };
     $("btnPrev").onclick = () => {
-      if (!editing && pageIdx > 0) {
-        pageIdx--;
-        renderOpen();
-      }
+      if (pageIdx > 0) goToPage(pageIdx - 1);
     };
     $("btnNext").onclick = () => {
-      if (!editing && pageIdx < n - 1) {
-        pageIdx++;
-        renderOpen();
-      }
+      if (pageIdx < n - 1) goToPage(pageIdx + 1);
     };
     const scrub = $("scrub");
     if (scrub) {
-      scrub.oninput = () => {
-        if (editing) return;
-        pageIdx = Number(scrub.value) || 0;
-        renderOpen();
+      scrub.onchange = () => {
+        goToPage(Number(scrub.value) || 0);
       };
     }
     stage.querySelectorAll(".pn-toc-item").forEach((btn) => {
       btn.addEventListener("click", () => {
-        if (editing) return;
-        pageIdx = Number(btn.getAttribute("data-i")) || 0;
-        renderOpen();
+        goToPage(Number(btn.getAttribute("data-i")) || 0);
       });
     });
     stage.querySelectorAll(".pn-toc-up").forEach((btn) => {
-      btn.addEventListener("click", (ev) => {
+      btn.addEventListener("click", async (ev) => {
         ev.stopPropagation();
+        if (!(await confirmLeavePaper())) return;
         const i = Number(btn.getAttribute("data-i"));
         if (!Number.isNaN(i) && i > 0) movePage(i, i - 1);
       });
     });
     stage.querySelectorAll(".pn-toc-dn").forEach((btn) => {
-      btn.addEventListener("click", (ev) => {
+      btn.addEventListener("click", async (ev) => {
         ev.stopPropagation();
+        if (!(await confirmLeavePaper())) return;
         const i = Number(btn.getAttribute("data-i"));
         if (!Number.isNaN(i)) movePage(i, i + 1);
       });
@@ -747,11 +1175,11 @@
         setMark(btn.getAttribute("data-mark") || "");
       });
     });
-    if ($("btnEdit")) $("btnEdit").onclick = () => startEdit();
     if ($("btnSavePage")) $("btnSavePage").onclick = () => savePage();
     if ($("btnCancelEdit")) $("btnCancelEdit").onclick = () => cancelEdit();
+    if ($("btnSpell")) $("btnSpell").onclick = () => toggleSpellMode();
     if ($("btnNewPage")) $("btnNewPage").onclick = () => newPage();
-    if ($("btnMark")) $("btnMark").onclick = () => cycleMark();
+    if ($("btnDelPage")) $("btnDelPage").onclick = () => deletePage();
 
     // toggle task boxes without entering edit
     if (!editing) {
@@ -762,6 +1190,21 @@
           if (!Number.isNaN(li)) toggleCheckboxLine(li);
         });
       });
+      // double-click title → edit title; body → edit body
+      const pageBody = $("pageBody");
+      const pageTitle = $("pageTitle");
+      if (pageBody)
+        pageBody.addEventListener("dblclick", (ev) => {
+          if (ev.target && ev.target.closest && ev.target.closest("a, input, button, label"))
+            return;
+          ev.preventDefault();
+          startEdit("body");
+        });
+      if (pageTitle)
+        pageTitle.addEventListener("dblclick", (ev) => {
+          ev.preventDefault();
+          startEdit("title");
+        });
     }
 
     if (editing) {
@@ -770,33 +1213,100 @@
       const markDirty = () => {
         dirty = true;
       };
-      if (titleEl) {
-        titleEl.addEventListener("input", markDirty);
-        titleEl.focus();
-      }
+      if (titleEl) titleEl.addEventListener("input", markDirty);
       if (bodyEl) bodyEl.addEventListener("input", markDirty);
+      const focusEl = editFocus === "body" ? bodyEl : titleEl;
+      if (focusEl) {
+        focusEl.focus();
+        try {
+          if (editFocus === "body" && bodyEl) {
+            const range = document.createRange();
+            range.selectNodeContents(bodyEl);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+          } else if (titleEl) {
+            const range = document.createRange();
+            range.selectNodeContents(titleEl);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+        } catch (e) {
+          /* ignore caret */
+        }
+      }
     }
+
+    bindPageScrollSave();
+    applyPendingScroll();
+    if (openId) scheduleSaveSession();
   }
 
-  function startEdit() {
+  function startEdit(focus) {
     editing = true;
     dirty = false;
+    editFocus = focus === "body" ? "body" : "title";
     renderOpen();
   }
 
-  function cancelEdit() {
-    if (dirty && !confirm("Discard edits?")) return;
+  function toggleSpellMode() {
+    spellMode = spellMode === "soft" ? "off" : "soft";
+    try {
+      localStorage.setItem("pn-spell-mode", spellMode);
+    } catch (e) {
+      /* ignore */
+    }
+    // re-apply without full re-render if possible
+    const body = $("pageBody");
+    const title = $("pageTitle");
+    const on = spellMode === "soft";
+    if (body && body.isContentEditable) {
+      body.spellcheck = on;
+      body.setAttribute("spellcheck", on ? "true" : "false");
+      body.classList.toggle("pn-spell-soft", on);
+      body.classList.toggle("pn-spell-off", !on);
+    }
+    if (title && title.isContentEditable) {
+      title.spellcheck = on;
+      title.setAttribute("spellcheck", on ? "true" : "false");
+    }
+    const btn = $("btnSpell");
+    if (btn) btn.textContent = "SPELL · " + (on ? "SOFT" : "OFF");
+    const hint = document.querySelector(".pn-md-hint");
+    if (hint)
+      hint.textContent =
+        "# ** ++ ` - [ ] @ · spell " +
+        spellMode +
+        " (pale squiggle · off for slugs)";
+    toast(on ? "spell soft · pale marks" : "spell off · slug / format mode");
+  }
+
+  async function cancelEdit() {
+    if (dirty) {
+      const ok = await librarySlip({
+        stamp: "LIBRARY DESK",
+        title: "Discard wet ink?",
+        body: "Throw away the changes on this paper and return to the printed page?",
+        okLabel: "Discard",
+        cancelLabel: "Keep writing",
+      });
+      if (!ok) return;
+    }
     editing = false;
     dirty = false;
     renderOpen();
   }
 
-  async function savePage() {
+  async function savePage(opts) {
+    opts = opts || {};
     const nb = notebook(openId);
-    if (!nb) return;
+    if (!nb) return false;
     const pages = pagesOf(nb);
     const pg = pages[pageIdx];
-    if (!pg) return;
+    if (!pg) return false;
     const titleEl = $("pageTitle");
     const bodyEl = $("pageBody");
     pg.title = titleEl ? titleEl.innerText.replace(/\n/g, " ").trim() : pg.title;
@@ -809,19 +1319,18 @@
       await persist();
       editing = false;
       dirty = false;
-      toast("page saved");
-      renderOpen();
+      if (!opts.silent) toast("page saved");
+      if (!opts.skipRender) renderOpen();
+      return true;
     } catch (e) {
       toast("save failed");
       console.error(e);
+      return false;
     }
   }
 
   async function newPage() {
-    if (editing) {
-      toast("save or cancel edit first");
-      return;
-    }
+    if (!(await confirmLeavePaper())) return;
     const nb = notebook(openId);
     if (!nb) return;
     const pages = pagesOf(nb);
@@ -841,9 +1350,49 @@
       await persist();
       pageIdx = pages.length - 1;
       toast("new page");
+      saveSessionNow();
       startEdit();
     } catch (e) {
       toast("save failed");
+      console.error(e);
+    }
+  }
+
+  async function deletePage() {
+    if (!(await confirmLeavePaper())) return;
+    const nb = notebook(openId);
+    if (!nb) return;
+    const pages = pagesOf(nb);
+    if (pages.length <= 1) {
+      toast("last page stays · empty it or burn the book");
+      return;
+    }
+    const pg = pages[pageIdx];
+    const label = (pg && (pg.title || "").trim()) || "this page";
+    const ok = await librarySlip({
+      stamp: "LIBRARY DESK",
+      title: "Remove a leaf?",
+      body:
+        "Take “" +
+        label +
+        "” out of the book?\n\nIt leaves the .bok. No putting it back from the bin.",
+      okLabel: "Remove leaf",
+      cancelLabel: "Keep it",
+    });
+    if (!ok) return;
+    pages.splice(pageIdx, 1);
+    renumber(pages);
+    nb.pages = pages;
+    nb.updated = Math.floor(Date.now() / 1000);
+    if (pageIdx >= pages.length) pageIdx = pages.length - 1;
+    try {
+      await persist();
+      pendingRestore = null;
+      toast("page removed");
+      saveSessionNow();
+      renderOpen();
+    } catch (e) {
+      toast("remove failed");
       console.error(e);
     }
   }
@@ -920,25 +1469,28 @@
     }
     if (ev.key === "ArrowLeft" || ev.key === "PageUp") {
       ev.preventDefault();
-      if (pageIdx > 0) {
-        pageIdx--;
-        renderOpen();
-      }
+      if (pageIdx > 0) goToPage(pageIdx - 1);
       return;
     }
     if (ev.key === "ArrowRight" || ev.key === "PageDown") {
       ev.preventDefault();
       const nb = notebook(openId);
       const n = pagesOf(nb || { pages: [] }).length;
-      if (pageIdx < n - 1) {
-        pageIdx++;
-        renderOpen();
-      }
+      if (pageIdx < n - 1) goToPage(pageIdx + 1);
     }
   });
 
   load()
-    .then(() => render())
+    .then(() => {
+      const sess = readSession();
+      if (typeof sess.tocOpen === "boolean") tocOpen = sess.tocOpen;
+      // App closed while inside a book → return to that book (its place via books[id])
+      if (sess.openId && notebook(sess.openId)) {
+        openBook(sess.openId);
+        return;
+      }
+      render();
+    })
     .catch((e) => {
       console.error(e);
       stage.innerHTML =

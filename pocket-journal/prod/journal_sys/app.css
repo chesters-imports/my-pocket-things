@@ -2,31 +2,6 @@
    Shelf of cloth-bound books → open spread → scrub pages.
    Charm: Concor desk seriousness + pocket tenderness. Not SaaS. */
 
-/* Soft spell marks — still visible for real typos, not screaming red */
-.pn-page-body-edit.pn-spell-soft::spelling-error,
-.pn-page-title[contenteditable="true"]::spelling-error {
-  /* Chromium / WebView2 */
-  text-decoration: underline wavy rgba(130, 110, 80, 0.42);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-  background: transparent;
-  color: inherit;
-}
-.pn-page-body-edit.pn-spell-soft::grammar-error,
-.pn-page-title[contenteditable="true"]::grammar-error {
-  text-decoration: underline dotted rgba(110, 120, 130, 0.4);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-  background: transparent;
-  color: inherit;
-}
-/* Some builds only honor -webkit- */
-.pn-page-body-edit.pn-spell-soft::-webkit-spelling-error,
-.pn-page-title[contenteditable="true"]::-webkit-spelling-error {
-  text-decoration: underline wavy rgba(130, 110, 80, 0.42);
-  text-decoration-thickness: 1px;
-}
-
 :root {
   /* MYPOCKET house chrome (align with chapbook) + notebook paper body */
   --void: #0c0a0e;
@@ -53,11 +28,6 @@
   --hand: "Caveat", "Segoe Print", cursive;
   --chrome-h: 1.7rem;
   --bar-h: 1.85rem;
-  /* scrollbars: almost gone, still findable */
-  --scroll-size: 5px;
-  --scroll-thumb: rgba(90, 70, 50, 0.22);
-  --scroll-thumb-hover: rgba(120, 95, 60, 0.45);
-  --scroll-track: transparent;
 }
 
 *,
@@ -71,71 +41,6 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-}
-
-/* Scrollbars: thin; page body only whispers while actively scrolling */
-.pn-toc-list,
-.pn-spine-rail,
-.pn-shelf-row {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
-}
-.pn-page-body {
-  scrollbar-width: none; /* Firefox — hidden until .is-scrolling */
-  scrollbar-color: transparent transparent;
-}
-.pn-page-body.is-scrolling {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
-}
-.pn-page-body.is-scrolling.is-scroll-fade {
-  scrollbar-color: transparent transparent;
-}
-.pn-toc-list::-webkit-scrollbar,
-.pn-spine-rail::-webkit-scrollbar,
-.pn-shelf-row::-webkit-scrollbar,
-.pn-page-body::-webkit-scrollbar {
-  width: var(--scroll-size);
-  height: var(--scroll-size);
-}
-.pn-toc-list::-webkit-scrollbar-track,
-.pn-spine-rail::-webkit-scrollbar-track,
-.pn-shelf-row::-webkit-scrollbar-track,
-.pn-page-body::-webkit-scrollbar-track {
-  background: var(--scroll-track);
-}
-.pn-toc-list::-webkit-scrollbar-thumb,
-.pn-spine-rail::-webkit-scrollbar-thumb,
-.pn-shelf-row::-webkit-scrollbar-thumb {
-  background: var(--scroll-thumb);
-  border-radius: 99px;
-  border: 1px solid transparent;
-  background-clip: padding-box;
-}
-/* page body: invisible thumb until scrolling */
-.pn-page-body::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 99px;
-  border: 1px solid transparent;
-  background-clip: padding-box;
-  transition: background 0.3s ease;
-}
-.pn-page-body.is-scrolling::-webkit-scrollbar-thumb {
-  background: var(--scroll-thumb);
-}
-.pn-page-body.is-scrolling.is-scroll-fade::-webkit-scrollbar-thumb {
-  background: transparent;
-}
-.pn-page-body.is-scrolling::-webkit-scrollbar-thumb:hover {
-  background: var(--scroll-thumb-hover);
-}
-.pn-toc-list::-webkit-scrollbar-thumb:hover,
-.pn-spine-rail::-webkit-scrollbar-thumb:hover,
-.pn-shelf-row::-webkit-scrollbar-thumb:hover {
-  background: var(--scroll-thumb-hover);
-}
-.pn-page-body::-webkit-scrollbar-corner {
-  background: transparent;
 }
 
 body.pn {
@@ -239,7 +144,22 @@ body.pn {
   background:
     radial-gradient(ellipse 80% 50% at 50% -10%, rgba(196, 60, 106, 0.12), transparent 55%),
     linear-gradient(180deg, #100c12 0%, var(--void) 40%);
-  padding: 0.75rem 1.25rem 0.85rem; /* chrome already says the name */
+  padding: 1.25rem 1.5rem 1rem;
+}
+.pn-shelf-title {
+  font-family: var(--hand);
+  font-size: 1.65rem;
+  color: #e8d0b8;
+  letter-spacing: 0.02em;
+  margin: 0 0 0.15rem;
+}
+.pn-shelf-sub {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
 }
 .pn-shelf-row {
   display: flex;
@@ -257,17 +177,17 @@ body.pn {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(200, 170, 130, 0.55);
-  margin: 0.1rem 0 0.3rem;
+  margin: 0.15rem 0 0.35rem;
 }
 .pn-zone-lab-shelf {
-  margin-top: 0.45rem;
-  padding-top: 0.45rem;
+  margin-top: 0.65rem;
+  padding-top: 0.55rem;
   border-top: 1px solid rgba(180, 140, 90, 0.18);
 }
 .pn-shelf-recents {
   flex: 0 0 auto;
-  max-height: 38%;
-  min-height: 9rem;
+  max-height: 42%;
+  min-height: 10rem;
   position: relative;
   padding-bottom: 1.1rem;
   /* short plinth under recents */
@@ -305,84 +225,72 @@ body.pn {
 .pn-book-wrap.is-recent .pn-book-title {
   font-size: 1.05rem;
 }
-/* Real planks: spines sit ON the lip, not floating over a painted stripe */
-.pn-spine-bay {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 0.45rem 0.4rem 0.55rem;
-  border: 1px solid rgba(120, 90, 50, 0.28);
-  border-radius: 3px;
-  background:
-    linear-gradient(180deg, #14100c 0%, #1a1410 100%);
-  box-shadow: inset 0 6px 14px rgba(0, 0, 0, 0.4);
-}
-.pn-spine-plank {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
 .pn-spine-rail {
+  flex: 1 1 auto;
+  min-height: 9.5rem;
   display: flex;
   flex-wrap: nowrap;
   align-items: flex-end;
   gap: 0.4rem;
-  min-height: 7.6rem;
-  padding: 0.45rem 0.65rem 0; /* bottom flush to lip */
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1.1rem 0.85rem 1.35rem;
   perspective: 600px;
   position: relative;
-  z-index: 2;
+  /* wood shelf bay for spines */
   background:
-    linear-gradient(180deg, #221810 0%, #18140e 100%);
-  border: 1px solid rgba(80, 60, 36, 0.45);
-  border-bottom: none;
-  border-radius: 2px 2px 0 0;
-  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.35);
+    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.2) 55%, rgba(0, 0, 0, 0.35) 100%),
+    linear-gradient(90deg, rgba(60, 40, 24, 0.35) 0%, transparent 8%, transparent 92%, rgba(60, 40, 24, 0.35) 100%),
+    #1a1410;
+  border: 1px solid rgba(120, 90, 50, 0.28);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 8px 16px rgba(0, 0, 0, 0.35),
+    inset 0 -2px 0 rgba(200, 160, 90, 0.08);
 }
-.pn-spine-lip {
-  height: 0.72rem;
-  margin: 0;
-  border-radius: 0 0 3px 3px;
-  position: relative;
-  z-index: 3;
-  background: linear-gradient(180deg, #6a5640 0%, #4a3828 38%, #2a2018 100%);
+.pn-spine-rail::before {
+  /* back of shelf */
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  right: 0.35rem;
+  top: 0.35rem;
+  bottom: 1.15rem;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(40, 28, 18, 0.5) 0 2px,
+      transparent 2px 14px
+    ),
+    linear-gradient(180deg, #221810 0%, #14100c 100%);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+.pn-spine-rail::after {
+  /* front lip */
+  content: "";
+  position: absolute;
+  left: 0.2rem;
+  right: 0.2rem;
+  bottom: 0.25rem;
+  height: 0.65rem;
+  border-radius: 1px 1px 3px 3px;
+  background: linear-gradient(180deg, #5a4838 0%, #3a2c20 40%, #241810 100%);
   box-shadow:
     0 3px 8px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(230, 200, 140, 0.28),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(100, 75, 45, 0.5);
-  border-top: 1px solid rgba(220, 180, 100, 0.2);
+    inset 0 1px 0 rgba(220, 180, 120, 0.18);
+  pointer-events: none;
+  z-index: 1;
 }
-/* spines rest on the lip: slight overlap so they sit *on* the wood */
-.pn-spine-plank .pn-spine-wrap,
-.pn-spine-plank .pn-spine-new {
-  margin-bottom: -0.28rem;
+.pn-spine-rail > * {
   position: relative;
-  z-index: 4;
-}
-.pn-spine-wrap.is-dragging {
-  opacity: 0.45;
-}
-.pn-spine-wrap.is-drop {
-  outline: 1px dashed rgba(220, 180, 100, 0.65);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-.pn-spine-wrap {
-  cursor: grab;
-  position: relative;
-  flex: 0 0 auto;
-}
-.pn-spine-wrap:active {
-  cursor: grabbing;
+  z-index: 2;
 }
 .pn-spine-new {
   flex: 0 0 auto;
+  align-self: flex-end;
   height: 7.2rem;
   min-width: 2.4rem;
   padding: 0.35rem 0.4rem;
@@ -833,94 +741,57 @@ body.pn {
   color: #f0e0c0;
 }
 
-/* Library slip — wet ink / soft prompts (not OS confirm) */
-.pn-slip {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
+/* Always-on markdown source on the page paper (no contenteditable) */
+.pn-page.is-live .pn-page-inner {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(8, 6, 10, 0.62);
-  padding: 1rem;
-  animation: pn-slip-in 0.14s ease-out;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 }
-@keyframes pn-slip-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-.pn-slip-card {
-  width: min(18.5rem, 100%);
-  background:
-    linear-gradient(165deg, #f4ead4 0%, #e8d8b8 45%, #dcc8a4 100%);
-  border: 1px solid rgba(70, 50, 28, 0.4);
-  border-radius: 2px 5px 4px 2px;
-  box-shadow:
-    0 0 0 1px rgba(255, 248, 230, 0.12),
-    0 16px 40px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  padding: 0.85rem 1rem 0.95rem;
-  color: #1a1410;
-}
-.pn-slip-stamp {
-  font-family: var(--mono);
-  font-size: 0.48rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(90, 50, 40, 0.65);
-  margin-bottom: 0.35rem;
-}
-.pn-slip-h {
+.pn-page-title-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background: transparent;
   font-family: var(--hand);
   font-size: 1.35rem;
   font-weight: 600;
-  line-height: 1.1;
-  color: #2a1810;
-  margin: 0 0 0.45rem;
+  color: var(--ink);
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+  padding: 0;
 }
-.pn-slip-body {
+.pn-page-title-input::placeholder {
+  color: #a09080;
+}
+.pn-page-md-src {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-height: 14rem;
+  resize: vertical;
+  margin: 0;
+  padding: 0.1rem 0 0.5rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
   font-family: var(--mono);
-  font-size: 0.62rem;
-  line-height: 1.45;
-  letter-spacing: 0.02em;
-  color: #3a2c20;
-  margin: 0 0 0.85rem;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: #1a1410;
   white-space: pre-wrap;
+  overflow: auto;
+  caret-color: #6a3020;
 }
-.pn-slip-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  justify-content: flex-end;
+.pn-page-md-src:focus {
+  background: rgba(255, 248, 230, 0.18);
 }
-.pn-slip-actions button {
-  font-family: var(--mono);
-  font-size: 0.52rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.35rem 0.65rem;
-  border-radius: 2px;
-  border: 1px solid rgba(60, 40, 20, 0.35);
-  background: rgba(255, 252, 245, 0.75);
-  color: #2a1c10;
-  cursor: pointer;
-}
-.pn-slip-actions button:hover {
-  border-color: #8a6030;
-  background: #fff8e8;
-}
-.pn-slip-actions button.primary {
-  background: #2a1c14;
-  border-color: #1a1008;
-  color: #f0e0c0;
-}
-.pn-slip-actions button.primary:hover {
-  background: #3a2a1c;
-  color: #fff8e8;
+.pn-page-md-src::placeholder {
+  color: #a09080;
 }
 
 /* Notebook meta: name + cloth (stickers later) */
@@ -1082,8 +953,7 @@ body.pn {
 .pn-page {
   /* CHG03: fill expanded deck height — paper + TOC grow with the well */
   flex: 1 1 auto;
-  /* wider paper — lore / daily pages need room (was min 34rem / 82%) */
-  width: min(48rem, 94%);
+  width: min(34rem, 82%);
   max-width: 100%;
   height: auto;
   min-height: 12rem;
@@ -1103,27 +973,6 @@ body.pn {
   /* visible so top ribbon can hang into the void */
   overflow: visible;
   user-select: text;
-}
-/* top typewriter rail: title left (clear of ribbon) · PAGE n/n hard right */
-.pn-page-rail {
-  display: flex;
-  align-items: baseline;
-  gap: 0.65rem;
-  flex: 0 0 auto;
-  margin: 0 0 0.4rem;
-  min-height: 1.1rem;
-}
-.pn-page-rail .pn-page-title {
-  flex: 1 1 auto;
-  min-width: 0;
-  margin: 0;
-  padding-left: 1.15rem; /* clear binding ribbon */
-}
-.pn-page-rail .pn-page-num {
-  flex: 0 0 auto;
-  margin: 0;
-  text-align: right;
-  opacity: 0.5;
 }
 .pn-page.is-edit {
   box-shadow:
@@ -1153,31 +1002,20 @@ body.pn {
   padding: 1.35rem 1.5rem 1.1rem 1.85rem;
 }
 .pn-page-num {
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--ink);
-  text-transform: uppercase;
+  font-family: var(--display);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
 }
 .pn-page-title {
-  /* same tight typewriter as PAGE n/n — hand lettering only for Contents / chrome */
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  font-weight: 500;
+  font-family: var(--hand);
+  font-size: 1.35rem;
+  font-weight: 600;
   color: var(--ink);
-  opacity: 0.55;
-  line-height: 1.3;
-  letter-spacing: 0.04em;
-  min-height: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.pn-page-title[contenteditable="true"] {
-  opacity: 0.88;
-  white-space: normal;
-  overflow: visible;
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+  min-height: 1.4rem;
 }
 .pn-page-title[contenteditable="true"],
 .pn-page-body[contenteditable="true"] {
@@ -1318,8 +1156,7 @@ body.pn {
 
 /* ── contents leaflet (matches cover / nameplate language) ── */
 .pn-toc {
-  /* a little wider so verbose page titles get more typewriter room */
-  flex: 0 0 min(16.5rem, 40vw);
+  flex: 0 0 min(13.5rem, 34vw);
   align-self: stretch;
   height: auto;
   max-height: none;
@@ -1406,32 +1243,25 @@ body.pn {
   box-shadow: inset 0 0 0 1px rgba(196, 60, 106, 0.28);
 }
 .pn-toc-item {
-  /* mark · num · title — auto columns (fixed num col was the empty gap) */
+  /* BUG01: no leader dots — mark + num + title with natural gap */
   display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr);
-  column-gap: 0.28rem;
-  row-gap: 0;
+  grid-template-columns: 0.55rem 1.15rem minmax(0, 1fr);
+  gap: 0.35rem;
   align-items: center;
-  min-height: 1.3rem;
+  min-height: 1.65rem;
   width: 100%;
   min-width: 0;
   border: none;
   background: transparent;
   text-align: left;
-  padding: 0.2rem 0.2rem 0.2rem 0.28rem;
+  padding: 0.28rem 0.3rem 0.28rem 0.35rem;
   cursor: pointer;
   color: #2a1c10;
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: 0.02em;
+  font-family: var(--hand);
+  font-size: 0.88rem;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
   border-radius: 2px;
-  align-items: start;
-}
-.pn-toc-item .pn-toc-n,
-.pn-toc-item .pn-toc-mark {
-  margin-top: 0.12rem; /* align with first line of wrapped title */
 }
 .pn-toc-row:not(.is-on) .pn-toc-item:hover {
   background: rgba(90, 60, 30, 0.06);
@@ -1441,11 +1271,10 @@ body.pn {
 }
 /* Mini bookmark tabs in TOC (not dots) */
 .pn-toc-mark {
-  width: 0.36rem;
-  height: 0.62rem;
-  justify-self: start;
+  width: 0.42rem;
+  height: 0.72rem;
+  justify-self: center;
   align-self: center;
-  flex-shrink: 0;
   background: transparent;
   clip-path: polygon(
     0 0,
@@ -1468,45 +1297,37 @@ body.pn {
     0 72%
   );
 }
-/* TOC mini-flags + swatches (page ribbon uses its own fabric rules) */
 .pn-toc-mark.mark-hot,
+.pn-ribbon.mark-hot,
 .pn-mark-swatch.mark-hot { background: var(--hot); }
 .pn-toc-mark.mark-brass,
+.pn-ribbon.mark-brass,
 .pn-mark-swatch.mark-brass { background: var(--brass); }
 .pn-toc-mark.mark-forest,
+.pn-ribbon.mark-forest,
 .pn-mark-swatch.mark-forest { background: #2a5848; }
 .pn-toc-mark.mark-navy,
+.pn-ribbon.mark-navy,
 .pn-mark-swatch.mark-navy { background: #3a5080; }
 .pn-toc-mark.mark-sand,
+.pn-ribbon.mark-sand,
 .pn-mark-swatch.mark-sand { background: var(--sand); }
 .pn-toc-n {
   font-family: var(--mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.02em;
-  color: rgba(50, 36, 20, 0.55);
-  text-align: left;
-  font-variant-numeric: tabular-nums;
-  min-width: 0.7rem; /* room for 1–2 digits without a cavern */
+  font-size: 0.48rem;
+  letter-spacing: 0.04em;
+  color: rgba(50, 36, 20, 0.48);
+  text-align: right;
 }
 .pn-toc-t {
-  /* up to ~2 lines, then ellipsis — long papers titles need air */
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  white-space: normal;
-  word-break: break-word;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   min-width: 0;
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.02em;
-  line-height: 1.25;
-  max-height: 2.5em;
 }
 .pn-toc-t.is-blank {
-  font-style: normal;
-  opacity: 0.45;
-  color: rgba(50, 36, 20, 0.55);
+  font-style: italic;
+  color: rgba(50, 36, 20, 0.4);
 }
 .pn-toc-move {
   display: flex;
@@ -1542,86 +1363,38 @@ body.pn {
   cursor: default;
 }
 
-/*
- * Cloth ribbon — binding side (not scrollbar side), hangs over the top edge
- * like a real bookmark tucked into the page.
- */
+/* Cloth ribbon — wider, sits a bit lower on the page, still peeks up */
 .pn-ribbon {
   position: absolute;
-  top: -0.28rem; /* a little lower into the page */
-  left: 1.55rem; /* near gutter / binding, not the scroll edge */
-  width: 0.9rem;
-  height: 3.05rem;
-  z-index: 5;
+  top: -0.55rem;
+  right: 1.45rem;
+  width: 1.35rem;
+  height: 2.85rem;
+  z-index: 4;
   pointer-events: none;
-  /* solid cloth + soft side light — not a harsh gradient slab */
-  background: currentColor;
-  color: #c43c6a; /* default; mark-* classes override via background */
-  border-radius: 1px 1px 0 0;
+  /* body of ribbon with swallowtail cut at the bottom tip (into the page) */
   clip-path: polygon(
-    0 0.45rem,
     0 0,
     100% 0,
-    100% 0.45rem,
-    100% 84%,
+    100% 78%,
     50% 100%,
-    0 84%
+    0 78%
   );
-  box-shadow:
-    1px 2px 4px rgba(20, 10, 5, 0.4),
-    inset 1px 0 0 rgba(255, 255, 255, 0.22),
-    inset -1px 0 0 rgba(0, 0, 0, 0.18);
-  filter: none;
-}
-/* mark colors as solid cloth */
-.pn-ribbon.mark-hot {
-  background: linear-gradient(180deg, #d45078 0%, #a82850 55%, #8a2040 100%);
-}
-.pn-ribbon.mark-brass {
-  background: linear-gradient(180deg, #d4b070 0%, #b89040 50%, #8a6828 100%);
-}
-.pn-ribbon.mark-forest {
-  background: linear-gradient(180deg, #3a7860 0%, #2a5848 50%, #1a3830 100%);
-}
-.pn-ribbon.mark-navy {
-  background: linear-gradient(180deg, #4a68a0 0%, #3a5080 50%, #283858 100%);
-}
-.pn-ribbon.mark-sand {
-  background: linear-gradient(180deg, #b89868 0%, #8a7050 50%, #5a4830 100%);
+  box-shadow: none;
+  filter: drop-shadow(1px 2px 3px rgba(20, 10, 5, 0.45));
 }
 .pn-ribbon::before {
-  /* fold over the top of the paper */
+  /* subtle fabric fold */
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 0.48rem;
+  inset: 0;
   background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.28) 0%,
-    rgba(0, 0, 0, 0.12) 100%
-  );
-  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-  pointer-events: none;
-}
-.pn-ribbon::after {
-  /* center crease so it reads as folded ribbon, not a UI pip */
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 0.55rem;
-  bottom: 0.85rem;
-  width: 1px;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.2),
-    rgba(0, 0, 0, 0.15),
-    rgba(255, 255, 255, 0.08)
+    90deg,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(255, 255, 255, 0.18) 38%,
+    rgba(0, 0, 0, 0.08) 100%
   );
   pointer-events: none;
-  opacity: 0.7;
 }
 /* Clip paper content; ribbon sits outside as sibling */
 .pn-page-inner {
@@ -1630,7 +1403,7 @@ body.pn {
   background: inherit;
 }
 
-/* Mark swatches — only while editing (no hover pop while scrolling) */
+/* Mark swatches under page */
 .pn-marks {
   position: absolute;
   left: 1.85rem;
@@ -1639,11 +1412,14 @@ body.pn {
   align-items: center;
   gap: 0.28rem;
   z-index: 3;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+.pn-page:hover .pn-marks,
+.pn-page.has-mark .pn-marks {
   opacity: 1;
   pointer-events: auto;
-}
-.pn-page:not(.is-edit) .pn-marks {
-  display: none;
 }
 .pn-mark-swatch {
   width: 0.72rem;
@@ -1701,14 +1477,15 @@ body.pn {
   position: absolute;
   right: 0.65rem;
   bottom: 0.55rem;
-  display: none;
+  display: flex;
   gap: 0.3rem;
+  opacity: 0;
+  transition: opacity 0.15s;
   pointer-events: none;
 }
-/* only while editing — never hover-reveal (distracting when scrolling) */
-.pn-edit-bar.is-on,
-.pn-page.is-edit .pn-edit-bar {
-  display: flex;
+.pn-page.is-edit .pn-edit-bar,
+.pn-page:hover .pn-edit-bar {
+  opacity: 1;
   pointer-events: auto;
 }
 .pn-edit-bar button {

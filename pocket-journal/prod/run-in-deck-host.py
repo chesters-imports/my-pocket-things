@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""My Pocket Notebook → Deck Host"""
+"""My Pocket Journal → Deck Host"""
 
 from __future__ import annotations
 
@@ -9,9 +9,9 @@ import sys
 from pathlib import Path
 
 PROD = Path(__file__).resolve().parent
-SYS = PROD / "notes_sys"
+SYS = PROD / "journal_sys"
 DECK = PROD.parents[2] / "the-deck-host" / "shell" / "deck_host.py"
-PORT = os.environ.get("NOTES_PORT", "43165")
+PORT = os.environ.get("JOURNAL_PORT", "43166")
 URL = f"http://127.0.0.1:{PORT}/"
 HEALTH = f"http://127.0.0.1:{PORT}/api/health"
 
@@ -23,20 +23,19 @@ def main() -> int:
     if not DECK.is_file():
         print(f"Deck Host missing: {DECK}", file=sys.stderr)
         return 1
-    # Wider default paper room (lore / daily); expand still grows
-    w = os.environ.get("NOTES_WIDTH", "920")
-    h = os.environ.get("NOTES_HEIGHT", "720")
+    w = os.environ.get("JOURNAL_WIDTH", "720")
+    h = os.environ.get("JOURNAL_HEIGHT", "700")
     os.environ.setdefault(
-        "DECK_HOST_EXPANDED_WIDTH", os.environ.get("NOTES_EXPANDED_WIDTH", "1040")
+        "DECK_HOST_EXPANDED_WIDTH", os.environ.get("JOURNAL_EXPANDED_WIDTH", "760")
     )
     os.environ.setdefault(
-        "DECK_HOST_EXPANDED_HEIGHT", os.environ.get("NOTES_EXPANDED_HEIGHT", "940")
+        "DECK_HOST_EXPANDED_HEIGHT", os.environ.get("JOURNAL_EXPANDED_HEIGHT", "920")
     )
     cmd = [
         sys.executable,
         str(DECK),
         "--title",
-        "My Pocket Notebook",
+        "My Pocket Journal",
         "--profile",
         "desk",
         "--width",
@@ -54,7 +53,7 @@ def main() -> int:
         "--spawn-cwd",
         str(SYS),
     ]
-    print("My Pocket Notebook · CO.MYPT-002-NOTES · Deck Host")
+    print("My Pocket Journal · CO.MYPT-003-JOURNAL · Deck Host")
     return subprocess.call(cmd)
 
 

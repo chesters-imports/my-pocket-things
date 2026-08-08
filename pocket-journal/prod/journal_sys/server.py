@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""My Pocket Notebook · CO.MYPT-002-NOTES · .bok books on disk (cute UI, human files)"""
+"""My Pocket Journal · CO.MYPT-003-JOURNAL · .bok books on disk"""
 
 from __future__ import annotations
 
@@ -12,17 +12,14 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlparse
 
-ROOT = Path(__file__).resolve().parent  # notes_sys (code only)
-PROD = ROOT.parent  # prod/
-# Operator saves live beside the system, not inside it (house layout).
+ROOT = Path(__file__).resolve().parent  # journal_sys (code)
+PROD = ROOT.parent
 SAFE = PROD / "safe_box"
 BOOKS = SAFE / "books"
-SHELF = SAFE / "shelf.json"  # lastOpened only
-LEGACY = ROOT / "data" / "library.json"  # old path; also check safe_box/legacy-data
-LEGACY_SAFE = SAFE / "legacy-data" / "library.json"
+SHELF = SAFE / "shelf.json"  # lastOpened only — not page bodies
 HOST = "127.0.0.1"
-PORT = int(__import__("os").environ.get("NOTES_PORT", "43165"))
-SKU = "CO.MYPT-002-NOTES"
+PORT = int(__import__("os").environ.get("JOURNAL_PORT", "43166"))
+SKU = "CO.MYPT-003-JOURNAL"
 
 
 def now() -> int:
@@ -31,16 +28,16 @@ def now() -> int:
 
 def load_shelf() -> dict[str, Any]:
     if not SHELF.is_file():
-        return {"schema": "mypt-notes-shelf.v1", "sku": SKU, "lastOpened": []}
+        return {"schema": "mypt-journal-shelf.v1", "sku": SKU, "lastOpened": []}
     try:
         return json.loads(SHELF.read_text(encoding="utf-8"))
     except Exception:
-        return {"schema": "mypt-notes-shelf.v1", "sku": SKU, "lastOpened": []}
+        return {"schema": "mypt-journal-shelf.v1", "sku": SKU, "lastOpened": []}
 
 
 def save_shelf(doc: dict[str, Any]) -> None:
     doc = dict(doc)
-    doc["schema"] = "mypt-notes-shelf.v1"
+    doc["schema"] = "mypt-journal-shelf.v1"
     doc["sku"] = SKU
     SHELF.write_text(
         json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
@@ -135,6 +132,7 @@ def read_book(bok: Path) -> dict[str, Any] | None:
                     "body": body,
                     "mark": pm.get("mark") or "",
                     "updated": int(pm.get("updated") or 0),
+                    "_file": pf.name,
                 }
             )
     pages.sort(key=lambda p: (p.get("position") or 0, p.get("id") or ""))
@@ -148,12 +146,13 @@ def read_book(bok: Path) -> dict[str, Any] | None:
         "cloth": meta.get("cloth") or "oxblood",
         "created": int(meta.get("created") or 0),
         "updated": int(meta.get("updated") or 0),
-        "pages": pages,
+        "pages": [{k: v for k, v in p.items() if k != "_file"} for p in pages],
         "_path": str(bok),
     }
 
 
 def write_book(nb: dict[str, Any], prefer_dir: Path | None = None) -> Path:
+    """Write notebook dict to a .bok package. Returns path."""
     BOOKS.mkdir(parents=True, exist_ok=True)
     book_id = nb.get("id") or f"nb-{now()}"
     nb["id"] = book_id
@@ -162,7 +161,8 @@ def write_book(nb: dict[str, Any], prefer_dir: Path | None = None) -> Path:
         base = slugify(nb.get("title") or book_id, book_id)
         candidate = BOOKS / f"{base}.bok"
         n = 2
-        while candidate.exists():
+        while candidate.exists() and bok_dir_for_id(book_id) is None:
+            # if folder exists for another book, pick new name
             other = read_book(candidate)
             if other and other.get("id") == book_id:
                 break
@@ -175,6 +175,7 @@ def write_book(nb: dict[str, Any], prefer_dir: Path | None = None) -> Path:
     pages_dir = existing / "pages"
     pages_dir.mkdir(parents=True, exist_ok=True)
 
+    # wipe old page files then rewrite (simple, safe for small journals)
     for old in pages_dir.glob("*.md"):
         old.unlink()
 
@@ -225,9 +226,13 @@ def list_books() -> list[dict[str, Any]]:
 def library_payload() -> dict[str, Any]:
     shelf = load_shelf()
     books = list_books()
-    clean = [{k: v for k, v in b.items() if not k.startswith("_")} for b in books]
+    # strip internal path for client
+    clean = []
+    for b in books:
+        c = {k: v for k, v in b.items() if not k.startswith("_")}
+        clean.append(c)
     return {
-        "schema": "mypt-notes.v1",
+        "schema": "mypt-journal.v1",
         "sku": SKU,
         "notebooks": clean,
         "lastOpened": shelf.get("lastOpened") or [],
@@ -239,6 +244,7 @@ def persist_library(doc: dict[str, Any]) -> dict[str, Any]:
     notebooks = doc.get("notebooks")
     if not isinstance(notebooks, list):
         notebooks = []
+    # map existing dirs by id
     known = {b["id"]: Path(b["_path"]) for b in list_books() if b.get("id")}
     seen_ids: set[str] = set()
     for nb in notebooks:
@@ -249,8 +255,10 @@ def persist_library(doc: dict[str, Any]) -> dict[str, Any]:
             continue
         seen_ids.add(bid)
         write_book(nb, prefer_dir=known.get(bid))
+    # remove books deleted from library
     for bid, path in known.items():
         if bid not in seen_ids and path.is_dir():
+            # only delete .bok packages we own
             if path.parent.resolve() == BOOKS.resolve() and path.name.endswith(".bok"):
                 for child in path.rglob("*"):
                     if child.is_file():
@@ -266,50 +274,107 @@ def persist_library(doc: dict[str, Any]) -> dict[str, Any]:
     return library_payload()
 
 
-def migrate_legacy_json() -> None:
-    """One-time: library.json → safe_box/books/*.bok (keep json as backup)."""
+def ensure_seed() -> None:
     BOOKS.mkdir(parents=True, exist_ok=True)
-    SAFE.mkdir(parents=True, exist_ok=True)
     if any(BOOKS.glob("*.bok")):
         return
-    # also adopt books left under notes_sys/books from early .bok cut
-    old_books = ROOT / "books"
-    if old_books.is_dir() and not any(BOOKS.glob("*.bok")):
-        for p in old_books.iterdir():
-            if p.is_dir() and p.name.endswith(".bok"):
-                dest = BOOKS / p.name
-                if not dest.exists():
-                    p.rename(dest)
-        old_shelf = ROOT / "shelf.json"
-        if old_shelf.is_file() and not SHELF.is_file():
-            old_shelf.rename(SHELF)
-        if any(BOOKS.glob("*.bok")):
-            sys.stderr.write(f"moved packs notes_sys/books → {BOOKS}\n")
-            return
-    src = LEGACY if LEGACY.is_file() else (
-        LEGACY_SAFE if LEGACY_SAFE.is_file() else None
+    t = now()
+    write_book(
+        {
+            "id": "nb-project-map",
+            "title": "Project Map",
+            "whisper": "what we made · why · bag pulls",
+            "cloth": "forest",
+            "created": t,
+            "updated": t,
+            "pages": [
+                {
+                    "id": "pg-rom-launcher",
+                    "position": 1,
+                    "title": "ROM Launcher",
+                    "mark": "brass",
+                    "updated": t,
+                    "body": (
+                        "**Name on the shelf**: the-deck-host/rom-launcher\n"
+                        "**Port it claims**: 43170\n\n"
+                        "What the box says it is (one breath, not truth): the start menu — "
+                        "little cases on a desk that quietly boot the other toys.\n\n"
+                        "# Why Does This Exist?\n"
+                        "My Pocket Internet had died, and with it, the concept of containing "
+                        "small toys and tools inside of launchable/clickable \"ROM Cases\" in any "
+                        "\"ROOM\" in the pocket internet. Conceptually, the ROM LAUNCHER exists as "
+                        "a means to quietly launch small web-tech and/or python application, "
+                        "running independently of any browser chrome.\n\n"
+                        "The ROM LAUNCHER purpose is to allow me to explore the toys I have made "
+                        "in ALICE_BOX which are the figment ideas of the pocket internet ROMs for "
+                        "ROOMs. It is helpful, since you can place \"launch icons\" onto a rail and "
+                        "easily manage your ROM applications in one tool bar.\n\n"
+                        "It is directly connected in the backend to the ROM CAT.\n"
+                        "~Sadly, at the time of this note, the ROM LAUNCHER does not display "
+                        "itself inside of itself.~\n"
+                    ),
+                },
+                {
+                    "id": "pg-notes-chords",
+                    "position": 2,
+                    "title": "Notes & Chords",
+                    "mark": "hot",
+                    "updated": t,
+                    "body": (
+                        "**Name on the shelf**: charlies-toys/kde-notes-chords\n"
+                        "**Label on the box**: CO.KDE-001-INSTR · “Notes & Chords”\n\n"
+                        "# What is this?\n"
+                        "This toy started as the first exploration taken into JS code. Adverse "
+                        "before, didn't like the markup. Self is a 24-year veteran of iGaming "
+                        "industry, having worked at the same producer for that entire duration. "
+                        "The intent was to spell break the concept of the infinite loop:\n\n"
+                        "Self desires pattern seeking (look for signs of fruit)\n"
+                        "Self expects something from finding pattern (fruit taste good!)\n"
+                        "Self not actually satiated, so self keep going.\n\n"
+                        "Most times, fruit isn't even real.\n"
+                        "Pay to Play took everything that was slot manipulation methods and "
+                        "gamified them more. Now, no even real fruit. Pixels on the screen. "
+                        "Sense of collection.\n\n"
+                        "Self want collection.\n"
+                        "Self want show off collection.\n\n"
+                        "So, produce slot machine concept. What if not pays money, pays in story? "
+                        "But random. How do you handle? Same story pieces, different landing "
+                        "results. So each spin becomes a chance at the next piece of the story, "
+                        "and even when the story does not change, the way it prints does. Like "
+                        "the concept that the emphasis changes the whole meaning in the sentence:\n\n"
+                        "`I didn't say he stole my money.'\n\n"
+                        "Each change shifts the meaning dramatically.\n"
+                        "So, each time you randomly roll the keyboard, you get a chance to "
+                        "understand something more. The weight changes, so the meaning may shift. "
+                        "Can you make meaning from the same stories if the weight changes in the "
+                        "narrative?\n\n"
+                        "Bonus: just add tone.js cause it looks like a piano.\n"
+                    ),
+                },
+            ],
+        }
     )
-    if src is None:
-        return
-    try:
-        doc = json.loads(src.read_text(encoding="utf-8"))
-    except Exception as e:
-        sys.stderr.write(f"legacy library read failed: {e}\n")
-        return
-    nbs = doc.get("notebooks") or []
-    for nb in nbs:
-        if isinstance(nb, dict) and nb.get("id"):
-            write_book(nb)
-    lo = doc.get("lastOpened")
-    if isinstance(lo, list):
-        save_shelf({"lastOpened": lo[:8]})
-    backup = src.parent / "library.json.bak-pre-bok"
-    if not backup.is_file():
-        try:
-            backup.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
-        except Exception:
-            pass
-    sys.stderr.write(f"migrated {len(nbs)} notebooks → {BOOKS}\n")
+    write_book(
+        {
+            "id": "nb-blank-field",
+            "title": "Field Journal",
+            "whisper": "empty pocket · for new pulls",
+            "cloth": "sand",
+            "created": t,
+            "updated": t,
+            "pages": [
+                {
+                    "id": "pg-hello",
+                    "position": 1,
+                    "title": "hello",
+                    "body": "Blank page for the next bag pull.\n\nWrite here. Agents read the same `.md` file.\n",
+                    "mark": "",
+                    "updated": t,
+                }
+            ],
+        }
+    )
+    save_shelf({"lastOpened": ["nb-project-map"]})
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -342,7 +407,7 @@ class Handler(SimpleHTTPRequestHandler):
                 {
                     "ok": True,
                     "sku": SKU,
-                    "service": "pocket-notebook",
+                    "service": "pocket-journal",
                     "port": PORT,
                     "books": str(BOOKS),
                 },
@@ -376,14 +441,14 @@ class Handler(SimpleHTTPRequestHandler):
 
 
 def main() -> None:
-    migrate_legacy_json()
+    ensure_seed()
     httpd = ThreadingHTTPServer((HOST, PORT), Handler)
-    print(f"My Pocket Notebook  http://{HOST}:{PORT}/")
+    print(f"My Pocket Journal  http://{HOST}:{PORT}/")
     print(f"SKU {SKU} · books {BOOKS}")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nclosed the pocket")
+        print("\nclosed the journal")
 
 
 if __name__ == "__main__":

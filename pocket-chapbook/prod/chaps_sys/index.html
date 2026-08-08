@@ -26,8 +26,13 @@
     <!-- POOL -->
     <section class="pc-view" id="viewPool">
       <div class="pc-toolbar">
-        <input type="search" id="poolSearch" class="pc-search" placeholder="search title / tag / author…" />
+        <input type="search" id="poolSearch" class="pc-search" placeholder="search title / tag / author / chip…" />
+        <select id="poolAuthor" class="pc-select" title="Author">
+          <option value="">all authors</option>
+        </select>
+        <label class="pc-check"><input type="checkbox" id="poolUnchapped" /> un-chapped only</label>
         <label class="pc-check"><input type="checkbox" id="poolShowArchived" /> archived</label>
+        <span class="pc-pool-count" id="poolCount">—</span>
         <button type="button" class="pc-btn" id="btnNewPoem">+ POEM</button>
       </div>
       <div class="pc-pool-list" id="poolList"></div>

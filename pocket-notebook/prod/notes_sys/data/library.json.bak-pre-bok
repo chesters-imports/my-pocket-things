@@ -1,0 +1,236 @@
+{
+  "schema": "mypt-notes.v1",
+  "sku": "CO.MYPT-002-NOTES",
+  "notebooks": [
+    {
+      "id": "nb-daily",
+      "title": "BSG Daily Tracker",
+      "whisper": "work brain · MB · releases · requests",
+      "cloth": "sand",
+      "created": 1785348075,
+      "updated": 1785521918,
+      "pages": [
+        {
+          "id": "pg-f7742f63",
+          "position": 1,
+          "title": "MB REQUESTS",
+          "body": "MB wants to put these 3 games into top list for review for possible math reversals\n\n- Money Train 4, Ancient Tumble, Bill and Coin 2\n\nThese games are built around several smaller progression mechanics that interact with each other. They're all high-volatility titles (Bill & Coin 2 is medium-high), have a 96.10% RTP, and average around 4.2/5 player ratings across casino websites. It seems this layered progression approach is well received by players and keeps the gameplay engaging.\n\nIntel is coming from a marketing directors resume listing top performing games.\n-- from @Anna via @Greg\n\n---\nRoulette Game\n\n[link to example of game](https://www.youtube.com/shorts/ID56aok-s20) assigned to @joshua -t 7/31\n\n**NEED SOFT SPEC**\nMATH needed for the multiplier adds\nART grumpy Vlad for 3d renders + quality team member\n\n---\nfortune gems 500\n\n---\n# NEED 3 POTS HERC - END OF MONDAY\n# NEED (SHERWOOD heist II) THEIVES - END OF MONDAY",
+          "updated": 1785521605,
+          "mark": "hot"
+        },
+        {
+          "id": "pg-e7fc076a",
+          "position": 2,
+          "title": "MB CONCERNS",
+          "body": "## UNCLEAR information about upcoming releases and statuses\n\n- [ ] Need improved ways to access SHARED OFFICIAL information with the ability to indicate if its been changed.",
+          "updated": 1785348939
+        },
+        {
+          "id": "pg-8e0c9484",
+          "position": 3,
+          "title": "[QA Feedback Sheet]",
+          "body": "(https://docs.google.com/spreadsheets/d/1xgcH8QhC3BModc77w9otJUJgKfwnRc0hRET8y_YH7o4/edit?gid=0#gid=0)",
+          "updated": 1785348292
+        },
+        {
+          "id": "pg-2944bab3",
+          "position": 4,
+          "title": "GAME DESIGN TEAM REQUESTS",
+          "body": "# GAME DESIGNERS REQUESTING HELP RE: EARLY PRODUCT QA\n@joshua\n- [9:48 AM] do you think you can help us communicate this with Adam and the art Qa team?\n- [9:48 AM] They are sharing beta demo for testing to Product team specifically to game design team, but there are plenty of obvious bugs.\n- [9:48 AM] Is there a way for them to test the game quickly and fix those obvious bugs before gd team make a review?\n\n@adam discussed, looking to see if Ivana's partner or Vlad in house has capacity.\n\n---\n\n- [ ] SUGGESTION/CHECKSUM: Do the product team members QA in rounds?",
+          "updated": 1785349492
+        },
+        {
+          "id": "pg-527b4963",
+          "position": 5,
+          "title": "Active Discussions for Q2 2027 title choices",
+          "body": ".format: studio\n[Theme Proposal List](https://docs.google.com/spreadsheets/d/19W82aje_MAewQXts9ZeBp3yEq6Ixf7BxaS7AmbAgBwc/edit?usp=sharing)\n\nGOLDEN DRAGON INFERNO 1000 \nConcept Art Direction [LINK](https://betsoft.atlassian.net/wiki/spaces/GDD/pages/1829863425/Ultimate+Golden+Dragon+Inferno+1000?atlOrigin=eyJpIjoiNjBlZmZjZDIwNTBlNDg5ZmIyMmNmMWRhZjg2NTgwNDQiLCJwIjoiY29uZmx1ZW5jZS1jaGF0cy1pbnQifQ)\n\n@Zang Cabael shared concept art for Ultimate Golden Dragon Inferno 1000 for review, and @Anna M provided positive initial feedback. @Arata raised concerns about player engagement with the bet booster feature, suggesting a need to study competitor approaches to make it more appealing and clear to players. @Zang Cabael has agreed to research competitor bet booster designs and incorporate findings into the game's art direction and the company's Game Design Guide and Standards.\n\n--\n\nQ2 suggestions known:\n\nBSGQ2G2 – Replica of Sun of Egypt 5\n • Suggested theme: Gold Nugget Rush 3\n\nBSGQ2G6 – Le Pharaoh (Bonus short cycle version)\n • Suggested theme: Thieves Guild\n\nNGQ2G3 – Clone of Love Potion #9\n • Suggested theme: Do or Diner\n\nBSGQ2G3 – New Mechanics for 3 Pots of Wishes\n • Suggested theme: Pots of Wishes\n\nBSGQ2G4 – New Mechanics; 5 Pots Original (4 Pots Riches + 3 Pots of Olympus)\n • Suggested theme: Garden of Babylon\n\nBSGQ2G7 – Semi-Clone of Thunder Coins XXL\n • Suggested theme: SuperNova BSG which features Energy, Cosmic theme. (by Anna)\n\nBSGQ2G8 – Clone of Gold Nugget Rush 2 (from Q3G42026)\n • Suggested theme: High end Jewelry store\n\nBSGQ2G8 – The Aristocrats (Short cycle or math change)\n • Suggested theme: The Samurai\n • Suggested theme: Odin\n • Suggested theme (Alternative): Asian Lucky Cat\n\nBSGQ2G9 – Big Catch (Additional Rules - Multiplier mode style mechanics)\n • Suggested theme: Outlaws vs Enforcer\n",
+          "updated": 1785348075
+        },
+        {
+          "id": "pg-8bb1d1b1",
+          "position": 6,
+          "title": "KNOWN RELEASES SCHEDULED",
+          "body": ".format: studio\n{WHITE}Q3 2026{/}\n\nBSG Q3G1_2026 The Robbery [TT:BB + Big Bass Bonanza] \nNG Q3G1_2026 Jesters Coin [TT:BB 3-REEL]\n    BSG Version Specific: Last Laugh\nBSG Q3G2_2026 The Governor [Le Bandit: Arata]\nBSG Q3G3_2026 Super Stampede [A Big Catch 1:2]\nBSG Q3G4_2026  Gold Nugget Rush 2 [1:2 Sun of Egypt 4]\nNG Q3G2_2026 In it to Win it [1:2 CR]\n    BSG Version Specific: THE Game Show\nBSG Q3G5_2026 Circus Bonanza: Roar 'n' Claw [Huff'n Even More: BOL Exclusive]\nBSG Q3G6_2026 Good Girl Bad Girl 2\nBSG Q3G7_2026 The VIP [Pho Sho VS Bag Non H&W] \nBSG Q3G8_2026 The Queen of Social Media [1:2 3POLW]\nNG Q3G3_2026: Wildfire Mustangs [COL + Duel Wild]\n    BSG Version: Blazing Stallion\n\n{WHITE}Q4 2026{/}\n\nBSG Q4G1_2026 3 Pots of Venice [3POO]\nBSG Q4G2_2026 Birds in the City [1:1 Gates of Olympus: Super Scatter]\nBSG Q4G3_2026 Phoenix Inferno [Cash Spree Phoenix 1:1] \nNG Q4G1_2026 Frosting Frenzy [THE Governor] \n    BSG Version: Dessert Dash\nBSG Q4G4_2026 The Collector [1:1 Le Pharaoh] \nBSG Q4G5_2026 The Artistocrats \nNG Q4G2_2026 Sultans Empire [3 Pots of Olympus 1:1] \n    BSG Version Specific: 3 Pots of Sultan\nBSG Q4G6_2026 The King Of Social Media Xmas [1:2 TT:BB]\nBSG Q4G7_2026 The Shopaholic [1:1 THE Queen Of Social Media]\nBSG Q4G8_2026 Gold Surge [Thunder Coins XXL 1:1]\nNG Q4G3_2026 Ruby Jade 2 [Gate of Olympus: Super Scatter 1:1]\n    BSG Version: Giovanni's Gems 2\nBSG Q4G9_2026 3 Pots Of The King [1:2 Pots of Great Fortune] \n\n\n{WHITE}Q1 2027{/}\n\nBSG Q1G1_2027 The Castaway\nBSG Q1G2_2027 Love Potion #9\nNG Q1G1_2027  3 Pot Buffalo \n    BSG Version Specific: Name To Be Decided\nBSG Q1G3_2027 4 Tech Bros \nBSG Q1G4_2027 THE Director\nBSG Q1G5_2027 THE Final Bell \nNG Q1G2_2027  3 Spicy Amigos\n    BSG Version: 3 Popping Peppers\nBSG Q1G6_2027 TBD TITLE -[DIAMONDS/777 THEME]\nBSG Q1G7_2027 Ultimate Golden Dragon Inferno 1000\nBSG Q1G8_2027 THE 3 Karens\nNG Q1G3_2027  Name TBD [5 Pot BAO ZHU ZHAO FU FIRECRACKER EXPRESS 1:1]  \n    BSG Version: Name TBD\nBSG Q1G9_2027 [TBD TITLE]",
+          "updated": 1785348075
+        },
+        {
+          "id": "pg-4yhazppnd",
+          "position": 7,
+          "title": "my concerns atm",
+          "body": "Shop-a-holic has high risk of being a flop or proving that good art ruins products. still concerned.\n\n\nneed to figure out Q2 schedule planning -- keep working GRM\n- are we adding coins of zeus?\n- where are we double slotting the fortune 500 dupes?\n\n\n@game_designers to provide models without themes and themes without models\n\n\n@fx-team issues with not actually reading the GDD\n\n4 tech bros: is too much of the 4th pot clipped at all times? [link](https://betsoft.atlassian.net/browse/Q1G3Y2027-84?focusedCommentId=102655&sourceType=mention&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-102655)\n\nnew game added to Q1:\n\n\n- [ ] mark end of project as exclusive \n\n",
+          "updated": 1785446189,
+          "mark": "navy"
+        },
+        {
+          "id": "pg-pru800bg3",
+          "position": 8,
+          "title": "links",
+          "body": "[traditional themes](https://docs.google.com/spreadsheets/d/17J9qN1hUCtv-bFSXOVovqsnAxjO2e006/edit?gid=307116477#gid=307116477)\n\n\n",
+          "mark": "",
+          "updated": 1785521918
+        }
+      ]
+    },
+    {
+      "id": "nb-blank",
+      "title": "SDK Field Notes",
+      "whisper": "empty pocket",
+      "cloth": "forest",
+      "created": 1785348075,
+      "updated": 1785526159,
+      "pages": [
+        {
+          "id": "pg-5ca5a522",
+          "position": 1,
+          "title": "terms",
+          "body": "CHIP / CUID / CHIP_CODE\nThe common key used for all material. Must be unique and define some sense of itself. \n\n\nCHIP EXAMPLES:\nloreBOX: DBS-LORE-SLUG-NAME-4053\nMyPocket notebook: MPT-NOTE-SLUG_NAME-5D2F\n\n",
+          "updated": 1785412655
+        },
+        {
+          "id": "pg-a4lp942d8",
+          "position": 2,
+          "title": "Chester's Imports: seg order",
+          "body": "CHESTER IS NOW ORDERING HIS SEGMENTS\nNo longer SAM-centric, THE N'S are trying a new way!\n\n\n## SUPER SEGMENT SORT!\n001-OT-130 SEC-1 CIO-0093\n\n\n# WHAT'S REALLY NEW!?\nCIO! This is CHESTER'S IMPORT ORDER!\nA new order segment. Now, if you like, you can sort all segments by entirely new CHESTER'S ONLY IMPORT ORDER. THE TRUE IO! NONE OF THE SAM BULLSHIT!\n\n\nS = SOFIA NOT SAM!\n\n",
+          "mark": "",
+          "updated": 1785526159
+        }
+      ]
+    },
+    {
+      "id": "nb-8vz77ymvl",
+      "title": "Project of Projects",
+      "whisper": "The various ways I have tried to hold myself in one place.",
+      "cloth": "navy",
+      "created": 1785446207,
+      "updated": 1785589467,
+      "pages": [
+        {
+          "id": "pg-vt0dfimvl",
+          "position": 1,
+          "title": "podcast idea: the reflect project",
+          "body": "# concept\nEach episode, reflect and project about some piece of media, myth, or otherwise interesting material which can be reflected on and projected about. A reflection project.\n\n## completion\nexisted in name only.",
+          "mark": "",
+          "updated": 1785453745
+        },
+        {
+          "id": "pg-f18qa3g3e",
+          "position": 2,
+          "title": "podcast idea: the living mirror",
+          "body": "# concept\nan open-ended reflecting podcast, an attempt to freely discuss the perception of symbolism of the living mirror of the world around me.\n\n\n## completion\nmedium. produced 4 episodes, released on Spotify. a few friends listened.",
+          "mark": "",
+          "updated": 1785453856
+        },
+        {
+          "id": "pg-xjswbjk8c",
+          "position": 3,
+          "title": "program idea: Jesus camp",
+          "body": "# concept\na 12 week Sunday group meet up to discuss @JFC-080 @jesus as consciousness evolution. learn symbols of the bible words in relation to the quantum mechanics of your evolving mind and see how it relates to the original stories of @JFC-080 and the bible.\n\n\n# completion\nplanned with @LAI-726 - cancelled due to differences in capacity. @LAI-726 was upset/resentful I was not contributing a lot of marketing, I was unsure what she expected given the way we met and that I was bringing the teachings. Her marketing skill was the reason for the pairing, but it did not fruit.\n\n",
+          "mark": "",
+          "updated": 1785454370
+        },
+        {
+          "id": "pg-44v64fn0j",
+          "position": 4,
+          "title": "framework: my pocket internet",
+          "body": "# CONCEPT\n\n",
+          "mark": "",
+          "updated": 1785589467
+        },
+        {
+          "id": "pg-ha2da0vqk",
+          "position": 5,
+          "title": "game: the forgetting house",
+          "body": "",
+          "mark": "",
+          "updated": 1785585121
+        },
+        {
+          "id": "pg-pv0ze5c5a",
+          "position": 6,
+          "title": "game: myPI: kitten detective",
+          "body": "",
+          "mark": "",
+          "updated": 1785585157
+        }
+      ]
+    },
+    {
+      "id": "nb-6cvycha1q",
+      "title": "Scratch",
+      "whisper": "",
+      "cloth": "oxblood",
+      "created": 1785585179,
+      "updated": 1785585272,
+      "pages": [
+        {
+          "id": "pg-y20gmza1q",
+          "position": 1,
+          "title": "a dumped mind",
+          "body": "Here is the real issue- there is too much to enter and still not the right entrances. all of the toys require there be stories and there are no stories until we can work through some trees. We could grab anything, but what and why and what shape of production would we make it? are we making a toy or a reality? how much of this is roleplay and how much of it is true production?",
+          "mark": "",
+          "updated": 1785585272
+        }
+      ]
+    },
+    {
+      "id": "nb-8oeeht81r",
+      "title": "AIDM Creator Studio",
+      "whisper": "",
+      "cloth": "navy",
+      "created": 1785589515,
+      "updated": 1785598840,
+      "pages": [
+        {
+          "id": "pg-gjpzsv81r",
+          "position": 1,
+          "title": "The Room Maker",
+          "body": "",
+          "mark": "",
+          "updated": 1785589538
+        },
+        {
+          "id": "pg-khffh8bem",
+          "position": 2,
+          "title": "filename ideas",
+          "body": "# .elx\n### what is an .elx file?\n.elx files are folder based box files containing everything you need.",
+          "mark": "",
+          "updated": 1785598840
+        }
+      ]
+    },
+    {
+      "id": "nb-yoypmqnjs",
+      "title": "The ROM Book",
+      "whisper": "",
+      "cloth": "forest",
+      "created": 1785590562,
+      "updated": 1785591620,
+      "pages": [
+        {
+          "id": "pg-cyblt0njs",
+          "position": 1,
+          "title": "ROM Launcher",
+          "body": "**Name on the shelf**: the-deck-host/rom-launcher\n**Port it claims**: 43170\n\nWhat the box says it is (one breath, not truth): the start menu — little cases on a desk that quietly boot the other toys.\n\n\n# Why Does This Exist?\nMy Pocket Internet had died, and with it, the concept of containing small toys and tools inside of launchable/clickable \"ROM Cases\" in any \"ROOM\" in the pocket internet. Conceptually, the ROM LAUNCHER exits as a means to quietly launch small web-tech and/or python application, running independently of any browser chrome. \n\n\nThe ROM LAUNCHER purpose is to allow me to explore the toys I have made in ALICE_BOX which are the figment ideas of the pocket internet ROMs for ROOMs. It is helpful, since you can place \"launch icons\" onto a rail and easily manage your ROM applications in one tool bar. \n\n\nIt is directly connected in the backend to the ROM CAT.\n~Sadly, at the time of this note, the ROM LAUNCHER does not display itself inside of itself.~",
+          "mark": "",
+          "updated": 1785591104
+        },
+        {
+          "id": "pg-uv11ctb8k",
+          "position": 2,
+          "title": "Game: Detective K - Notes & Chords",
+          "body": "**Name on the shelf**: charlies-toys/kde-notes-chords\n**Label on the box**: CO.KDE-001-INSTR · “Notes & Chords”\n\n\n# What is this?\nThis toy started as the first exploration taken into JS code. Adverse before, didn't like the markup. Self is a 24-year veteran of iGaming industry, having worked at the same producer for that entire duration. The intent was to spell break the concept of the infinite loop:\n\n\nSelf desires pattern seeking (look for signs of fruit)\nSelf expects something from finding pattern (fruit taste good!)\nSelf not actually satiated, so self keep going.\n\n\nMost times, fruit isn't even real.\nPay to Play took everything that was slot manipulation methods and gamified them more. Now, no even real fruit. Pixels on the screen. Sense of collection.\n\n\nSelf want collection.\nSelf want show off collection.\n\n\nSo, produce slot machine concept. What if not pays money, pays in story? But random. How do you handle? Same story pieces, different landing results. So each spin becomes a chance at the next piece of the story, and even when the story does not change, the way it prints does. Like the concept that the emphasis changes the whole meaning in the sentence:\n\n\n`I didn't say he stole my money.'\n\n\nEach change shifts the meaning dramatically.\nSo, each time you randomly roll the keyboard, you get a chance to understand something more. The weight changes, so the meaning may shift. Can you make meaning from the same stories if the weight changes in the narrative?\n\n\nBonus: just add tone.js cause it looks like a piano.",
+          "mark": "",
+          "updated": 1785591620
+        }
+      ]
+    }
+  ],
+  "lastOpened": [
+    "nb-8oeeht81r",
+    "nb-yoypmqnjs",
+    "nb-8vz77ymvl",
+    "nb-blank",
+    "nb-6cvycha1q",
+    "nb-daily"
+  ]
+}

@@ -7,7 +7,12 @@ Pocket apps for one kind of clay at a time. Not terminals. Not global software.
 | Bay | SKU | Status |
 |-----|-----|--------|
 | [`pocket-chapbook/`](./pocket-chapbook/) | **CO.MYPT-001-CHAPS** | desk |
-| [`pocket-notebook/`](./pocket-notebook/) | **CO.MYPT-002-NOTES** | desk |
+| [`pocket-notebook/`](./pocket-notebook/) | **CO.MYPT-002-NOTES** | desk · work-brain / JSON library |
+| [`pocket-journal/`](./pocket-journal/) | **CO.MYPT-003-JOURNAL** | desk · `.bok` books · map / why / pulls |
+
+**SophiaDesk** (consider desk) moved 2026-08-07 → [`../le-awn-industries/sophia-desk/`](../le-awn-industries/sophia-desk/) · **CO.LEA-001-DESK** · not pocket clay.
+
+**Receiver** (multi-object felt, half-state) lives under Deck Host: [`../the-deck-host/receiver/`](../the-deck-host/receiver/) · **CO.RECV-001** · not a My Pocket Things bay.
 
 DCO REQs:  
 - Chapbook: `sdk-import-station/paper/dc/ROM REQUESTS/FK-DC-req-my-pocket-things-sku-001-poems-RMPTSP-52759c.fk.json`  
