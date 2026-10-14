@@ -1,4 +1,5 @@
 ---
+crate: crate.5814E1FAECD18266
 title: Book of Hymns
 author:
 color: amber

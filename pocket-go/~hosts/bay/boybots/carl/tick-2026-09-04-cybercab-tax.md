@@ -1,9 +1,10 @@
 ---
+crate: crate.87379021B7386E99
 title: Tick 2026-09-04 — cybercab echo + tax debt move
 maker: Carl
 filed_by: Carl
 class: tick
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: morning-chat
 ---

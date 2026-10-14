@@ -3,7 +3,7 @@ title: TPS ↔ lore card pipe (design)
 maker: Carl
 filed_by: Carl
 class: note
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: morning-chat
 updated: 2026-09-04

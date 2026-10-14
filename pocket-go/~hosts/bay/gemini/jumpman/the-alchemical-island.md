@@ -3,7 +3,7 @@ crate: crate.D02C732E0F50A1A6
 title: The Alchemical Island
 maker: Gemini
 class: synthesis
-environment: gemini
+environment: bay
 imported: 2026-09-04
 ---
 

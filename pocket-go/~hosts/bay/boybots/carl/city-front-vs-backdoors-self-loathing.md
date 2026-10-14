@@ -1,9 +1,10 @@
 ---
+crate: crate.5F5EC5F6C56AE559
 title: City front vs backdoors — ritual and self-loathing
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: morning-chat
 ---

@@ -1,9 +1,10 @@
 ---
+crate: crate.147E3B14A8CB2DED
 title: X thread with Jared — truncated fragments
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: x.com/@kitkatkittenlab
 handle: kitkatkittenlab

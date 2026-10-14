@@ -1,9 +1,10 @@
 ---
+crate: crate.A12555E7AC2FD537
 title: Sibling-god / Sir Pentious save
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: evening-chat
 ---

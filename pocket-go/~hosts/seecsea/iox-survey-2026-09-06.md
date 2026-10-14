@@ -1,4 +1,4 @@
-﻿---
+---
 crate: crate.PENDING
 title: IOX survey — pre-agent + vaults
 captured: 2026-09-06

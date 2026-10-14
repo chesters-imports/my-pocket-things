@@ -3,7 +3,7 @@ crate: crate.53B67BA402834DAC
 title: Charlie
 section: front
 role: Oceanic 815
-environment: island
+environment: oceanic
 kind: character-stub
 status: empty
 ---

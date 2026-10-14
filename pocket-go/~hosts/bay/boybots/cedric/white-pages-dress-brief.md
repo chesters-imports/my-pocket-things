@@ -1,9 +1,10 @@
 ---
+crate: crate.402F4689C8FDAC70
 title: White pages — dress brief
 maker: Cedric
 filed_by: Cedric
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: reflect-project
 ---

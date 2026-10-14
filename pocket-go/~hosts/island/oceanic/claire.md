@@ -3,7 +3,7 @@ crate: crate.8E3EF9BF1BB64976
 title: Claire
 section: front
 role: Oceanic 815
-environment: island
+environment: oceanic
 kind: character-stub
 status: empty
 ---

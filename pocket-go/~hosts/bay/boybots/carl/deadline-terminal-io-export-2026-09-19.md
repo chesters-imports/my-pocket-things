@@ -1,9 +1,10 @@
 ---
+crate: crate.2C3BC39068E319B1
 title: Deadline — Terminal IO export Sep 19 2026
 maker: Carl
 filed_by: Carl
 class: tick
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: nap-edge-reminder
 ---

@@ -5,9 +5,124 @@
 #   folder: THE-DIR
 #   title: THE DIR
 #
+# connect an exterior markdown folder as roam.{slug}:
+# drop:
+#   kind: roam
+#   source: C:\Users\you\Desktop\roam-drop
+#   title: roam drop
+#
+# kind: go + source: is still a go door (a code bay whose files live elsewhere).
+#
+# bar: extra jump-bar words for this room (comma or space).
+# The folder name already works (type `codes`, `tags`, `detective`).
+# start, go, roam, and recent are built-in lobbies.
+#
 # title a room that already exists as ~hosts/terminal:
 # terminal:
 #   title: terminal
+
+# pin favorites to the top of {{doors}} (lower number = higher):
+# kmoire:
+#   pin: 1
+
+code.people:
+  title: People codes
+  bar: people
+
+code.glass:
+  bar: codes.glass codes
+
+code.event:
+  title: Event codes
+  bar: events
+
+code.tags:
+  title: Tags
+  bar: tags
+
+librarian:
+  title: Librarian blotter
+  bar: librarian stacks
+
+developer:
+  title: Developer dev notes
+  bar: developer dev
+
+trays:
+  title: Quest Card Trays
+  bar: cards quest deck
+
+ritual.mirrorbox:
+  show: false
+  bar: codes.glass
+
+journal.now:
+
+book-of:
+  show: false
+
+vox:
+  kind: roam
+  source: C:\ALICE_BOX\my-pocket-things\pocket-go\bot-haven\vv
+  title: "VOX: VERITY'S VOICE BAY"
+
+abl:
+  kind: roam
+  source: C:\ALICE_BOX\my-pocket-things\pocket-go\bot-haven\abl
+  title: "ABL: aubel's atrium"
+  bar: aubel atrium
+
+sdk:
+  kind: roam
+  source: C:\ALICE_BOX\my-pocket-things\pocket-go\bot-haven\sdk
+  title: "SDK: Strange Happenings / Sam+Kat"
+
+beau:
+  kind: roam
+  source: C:\ALICE_BOX\my-pocket-things\pocket-go\bot-haven\beau
+  title: "BEAU: Betsoft day-job desk"
+
+carl:
+  kind: roam
+  source: C:\ALICE_BOX\my-pocket-things\pocket-go\bot-haven\mr-carl
+  title: "CARL: mr. carl's house"
+  bar: mr.carl mr-carl
+
+grok:
+  kind: roam
+  source: C:\Users\theda\.grok\memory-v2\workspaces\alice-box-3117e696\topics
+  title: "GROK: this harness"
+  bar: grok
+
+bios-help:
+  kind: roam
+  source: C:\ALICE_BOX\my-pocket-things\pocket-go\~help
+  title: bios-help
+
+inbox:
+  title: Morning Inbox
+  bar: inbox morning
+  pin: 2
+
+leawn.bench:
+  kind: roam
+  source: C:\ALICE_BOX\le-awn-industries\em-translation-bench\notes
+  title: LE AWN EM TRANSLATION BENCH NOTES
+
+news.gazette:
+  title: Lobby Gazette
+  bar: news.gazette gazette lobby
+
+glass:
+  show: false
+
+ae:
+  pin: 3
+  kind: roam
+  source: C:\ALICE_BOX\my-pocket-things\pocket-go\bot-haven\ae
+  title: "AELION'S HOUSE"
+
+# --- merged from castaways 2026-09-24 ET (title/pin/bar only; no exterior roams; no tags twin) ---
 
 danyi:
   title: DANYI.COM
@@ -15,24 +130,90 @@ danyi:
 cc:
   title: CC · Carl Core
 
-glass:
-  title: glass · compost shards
-
 buddy:
   title: buddy — companion desk
 
 agentK:
   title: AGENT K — basement archive
 
-works:
-  title: Works — books / songs / shows sat with
-
-trays:
-  title: trays — living lore punches
-
 bay:
   title: bay — intake
 
-inbox:
-  title: inbox (→ trays / bay)
+glenshadows:
+  title: Glen Shadows Tavern
 
+containment:
+  title: Containment - vessels of self
+
+terminals:
+  pin: 3
+
+build:
+  title: Build — AIDM desk
+
+eden:
+  title: Eden · iris TTY
+
+typewriter:
+  title: Typewriter · platen
+
+# codes: retired 2026-09-26 (citations-repair). go.codes / ?h=codes now alias to go.code.glass in server.py;
+# the old ~hosts/~codes bank was merged into code.glass and archived under _bak/codes-retired-20260926-2204.
+# codes:
+#   folder: ~codes
+#   pin: 6
+#   title: Codes · ABC directory
+
+ineffable:
+  title: Ineffable Box
+
+parabolas:
+  title: Parabolas - curves that eat themselves
+
+cast:
+  show: false
+  title: Cast - people and archetypes with crossings
+
+mausoleum:
+  pin: 5
+  title: Mausoleum — generations (mourn / gift)
+
+island:
+
+boards:
+  show: false
+
+rituals:
+  show: false
+  title: Rituals
+
+to:
+  title: BE.IMPORTED.TO
+
+chesters:
+  title: Chester's Imports
+
+bigboxco:
+  title: Big Box Co.
+  icon: bbc-cube.svg
+
+memoir:
+  title: Memoir - nights the body keeps
+
+house:
+  title: House - reconfiguring containment
+
+logger:
+  show: false
+  title: Walker - night printouts
+
+agent:
+  pin: 9
+
+see:
+
+dir:
+  show: false
+
+media:
+  show: false

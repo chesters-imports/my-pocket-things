@@ -4,7 +4,7 @@ title: THE * / Tav-Aleph
 maker: Lore
 filed_by: Lore
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: evening-chat
 ---

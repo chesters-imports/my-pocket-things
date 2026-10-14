@@ -1,9 +1,10 @@
 ---
+crate: crate.49492A56605471E1
 title: Mirror box ritual — PocketGo still running
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: morning-chat
 ---

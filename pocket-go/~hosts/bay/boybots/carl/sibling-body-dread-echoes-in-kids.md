@@ -1,9 +1,10 @@
 ---
+crate: crate.57C148D6B81ED6A8
 title: Sibling body dread / echoes in the kids
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: evening-chat
 ---

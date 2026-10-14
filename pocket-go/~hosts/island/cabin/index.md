@@ -7,4 +7,6 @@ title: Cabin blotter
 
 Jacob's cabin hanging off the island. Walk back: [[../the-map|The Map]] / [[../_index|Island]].
 
+Chester's cabin, where he told every story of Her.
+
 {{dir}}

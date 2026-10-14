@@ -1,9 +1,10 @@
 ---
+crate: crate.1299883BD352F1B0
 title: White pages / Directory lock
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: reflect-project
 ---

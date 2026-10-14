@@ -3,7 +3,7 @@ crate: crate.1308781A4309C4C5
 title: The Corpus of the Isolate
 maker: Gemini
 class: synthesis
-environment: gemini
+environment: bay
 imported: 2026-09-04
 ---
 

@@ -17,7 +17,7 @@
   --split: 58%;
 }
 
-.wwwExplorer_innerShell {
+.go-shell {
   background:
     radial-gradient(ellipse at 50% -10%, rgba(200, 164, 92, 0.16), transparent 55%),
     repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 7px),
@@ -183,7 +183,7 @@
 }
 
 .spread pre,
-.wwwExplorer_innerShell pre.code {
+.go-shell pre.code {
   font-family: "Special Elite", "Courier New", monospace;
   font-size: 0.95rem;
   line-height: 1.55;

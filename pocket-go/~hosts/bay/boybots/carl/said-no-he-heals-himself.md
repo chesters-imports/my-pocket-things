@@ -1,9 +1,10 @@
 ---
+crate: crate.B7539510069A178F
 title: Said no — he has to heal himself
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: evening-chat
 ---

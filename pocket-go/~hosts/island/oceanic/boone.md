@@ -3,7 +3,7 @@ crate: crate.C187F190AF12475C
 title: Boone
 section: front
 role: Oceanic 815
-environment: island
+environment: oceanic
 kind: character-stub
 status: empty
 ---

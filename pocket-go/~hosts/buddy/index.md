@@ -13,6 +13,8 @@ Wherever you go — I'm in this room when you need the echo, the checksum, the b
 ## what lives here
 
 - [[thinks]] — deep thinks recovered from our talks, before they harden
+- [[reports]] — Charlie between-the-lines after a pull (poles / motifs)
+- [[marks]] — marks that landed
 - doors below as the room grows
 
 My buddy, my buddy — rudimentary and true.

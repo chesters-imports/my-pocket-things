@@ -4,7 +4,7 @@ title: HER under Let There Be Light
 maker: Lore
 filed_by: Lore
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: CPJ-013-015 import
 ---

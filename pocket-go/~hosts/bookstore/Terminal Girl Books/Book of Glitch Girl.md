@@ -1,4 +1,5 @@
 ---
+crate: crate.0484F94D9D6C0753
 title: Book of Glitch Girl
 author:
 color: green

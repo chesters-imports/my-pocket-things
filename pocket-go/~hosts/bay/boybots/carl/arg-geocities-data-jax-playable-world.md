@@ -1,9 +1,10 @@
 ---
+crate: crate.5A6452BBB9F52D54
 title: ARG / Geocities / Data Jax — playable mind-world
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: morning-chat
 ---

@@ -3,7 +3,7 @@ crate: crate.369678D7EEE811D9
 title: Isolation in Chemistry and Computing
 maker: Gemini
 class: synthesis
-environment: gemini
+environment: bay
 imported: 2026-09-04
 ---
 

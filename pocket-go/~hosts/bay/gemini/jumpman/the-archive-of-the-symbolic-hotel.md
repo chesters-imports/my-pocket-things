@@ -3,7 +3,7 @@ crate: crate.5134862802A43967
 title: The Archive of the Symbolic Hotel
 maker: Gemini
 class: synthesis
-environment: gemini
+environment: bay
 imported: 2026-09-03
 source: dump-09-03-26
 ---

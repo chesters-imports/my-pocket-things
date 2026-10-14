@@ -4,7 +4,7 @@ title: Developer / SDK / Sophia / Sam.exe
 maker: Lore
 filed_by: Lore
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 whose-view: Developer
 source: Reflect Project chat

@@ -1,4 +1,5 @@
 ---
+crate: crate.8276AD71BAD0DA3A
 title: Book of Prophecies
 author:
 color: purple

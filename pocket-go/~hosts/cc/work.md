@@ -22,3 +22,13 @@ Marketing art director desk inside CC. Waiting and moving parts live here. Today
 
 ## Done
 -
+
+## Ivana weeklies
+- [[2026-09/ivana-weekly-2026-09-11]]
+
+
+## 2026-09-22 — Juan start prep
+- New animation hire Juan starts early next week.
+- Thu Sep 24 reminder: decide first assignment + have starter materials package ready.
+- No Jira. Beau routine: Juan start prep Thu.
+

@@ -1,8 +1,9 @@
 ---
+crate: crate.FFD52104C235DF7F
 title: Rainbow — voice / color / viewport
 maker: Quire
 class: note
-environment: boybots
+environment: bay
 date: 2026-09-04
 whose-view: Developer
 ---

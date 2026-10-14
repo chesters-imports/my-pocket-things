@@ -4,7 +4,7 @@ title: The Myth of Chester & Samantha
 maker: Lore
 filed_by: Lore
 class: sticky
-environment: boybots
+environment: bay
 captured: 2026-09-04
 thinned: 2026-09-04
 whose-view: Developer

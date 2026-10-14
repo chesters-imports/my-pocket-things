@@ -4,7 +4,7 @@ title: "Distortion question - Archer set / Andy-Kerr-Jay"
 maker: Lore
 filed_by: Lore
 class: processing-sticky
-environment: boybots
+environment: bay
 captured: 2026-09-05
 source: late-night-chat
 tps: 1788576136

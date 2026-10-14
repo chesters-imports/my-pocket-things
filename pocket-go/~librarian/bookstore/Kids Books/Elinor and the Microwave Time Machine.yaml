@@ -1,10 +1,9 @@
 house: LIBRARIAN
 pocket: go.bookstore/Kids Books/Elinor and the Microwave Time Machine.md
 crate: crate.B6EB16E9993DE41A
-cover: elinor-microwave-cover.png
 fields:
   - type: input
-    label: name
+    label: title
     value: Elinor and the Microwave Time Machine
   - type: input
     label: author

@@ -1,9 +1,10 @@
 ---
+crate: crate.C1BBA156DFE22EC8
 title: Project = refactor, not self-attack
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-04
 source: morning-chat
 ---

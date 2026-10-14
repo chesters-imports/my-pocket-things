@@ -2,7 +2,7 @@
 title: White pages — missing host class
 maker: Quire
 class: note
-environment: boybots
+environment: bay
 date: 2026-09-04
 source: reflect-project / symbolic-hotel pass
 ---

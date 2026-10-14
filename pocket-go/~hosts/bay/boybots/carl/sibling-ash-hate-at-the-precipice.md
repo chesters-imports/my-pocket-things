@@ -1,9 +1,10 @@
 ---
+crate: crate.5628E0793F110F7A
 title: Sibling ash — hate at the precipice
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-05
 source: morning-chat
 ---

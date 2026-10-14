@@ -3,7 +3,7 @@ crate: crate.87EFE13F974F4D1E
 title: Locke
 section: front
 role: Oceanic 815
-environment: island
+environment: oceanic
 kind: character-stub
 status: empty
 ---

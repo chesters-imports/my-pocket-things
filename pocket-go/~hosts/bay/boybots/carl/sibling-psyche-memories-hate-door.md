@@ -3,7 +3,7 @@ title: Sibling psyche — memories / hate as door
 maker: Carl
 filed_by: Carl
 class: capture
-environment: boybots
+environment: bay
 captured: 2026-09-05
 source: morning-chat
 ---

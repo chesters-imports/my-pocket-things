@@ -1,0 +1,973 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;600&family=Share+Tech+Mono&display=swap");
+
+/* event - TPS cover sheet coat (go.code.event only)
+   Ported from the BIOS TPS cabinet (librarian.css .librarian.is-tps):
+   cubicle-booth olive-black desk with star specks, off-white #eef0e4 cover
+   sheet with faint red rules + punch holes, 3px TPS-red left rule, hard
+   offset shadows, Barlow Condensed stamp labels, IBM Plex Mono body,
+   round TPS stamp, punch-clock red plates, dashed catalog cards.
+   Layout is the same folder desk as before (lamp, tab, clips rail, legal
+   paper, lip). No tilt on text-bearing plates, no blur on text.
+   fill-stage / inner-scroll - never 100vh.
+   previous coat: _bak/event-tps-dress-20260926-184536/mats/styles/event.css */
+
+:root {
+  --strip: #c42820;
+}
+
+.go-shell {
+  --booth: #1c1e18;
+  --booth-hi: #2e3028;
+  --booth-lo: #161814;
+  --slip: #eef0e4;
+  --slip-hi: #f6f7ee;
+  --slip-grey: #e4e6da;
+  --slip-pink: #f4d6d4;
+  --stamp: #c42820;
+  --stamp-hi: #e03830;
+  --stamp-lo: #8a1810;
+  --ink: #1c1e18;
+  --ink-2: #3a3c34;
+  --mute: #6a6c60;
+  --mute-2: #5a5c50;
+  --edge: #8a8c78;
+  --fog: #c8cab8;
+  --rule: rgba(196, 40, 32, 0.07);
+  --cite: #c42820;
+  --paper: var(--slip);
+  --legal: var(--slip);
+  --rail: 13em;
+  --tps-cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --tps-mono: "IBM Plex Mono", "Share Tech Mono", "Courier New", monospace;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--tps-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  text-shadow: none;
+  background:
+    radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.09) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 78% 22%, rgba(180, 210, 255, 0.07) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 42% 68%, rgba(255, 255, 255, 0.05) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 88% 80%, rgba(196, 40, 32, 0.12) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 6% 88%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 60% 6%, rgba(255, 255, 255, 0.05) 0 1px, transparent 1.5px),
+    linear-gradient(180deg, #2a2e26 0%, var(--booth-lo) 100%);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.04),
+    inset -1px -1px 0 #00000088;
+}
+
+.go-shell > #browserWindow,
+#browserWindow {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  min-width: 0;
+  height: auto !important;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden !important;
+  margin: 0;
+  padding: 10px 12px 8px 12px;
+}
+
+.go-shell .mast,
+.go-shell .headers,
+.go-shell .crumb,
+.go-shell .uses {
+  display: none !important;
+}
+
+.go-shell .root-up .crumb,
+.go-shell .root-up .crumbback {
+  display: inline !important;
+}
+
+.go-shell p {
+  white-space: normal !important;
+}
+
+/* dress.css paints .go-shell a:link / :visited purple - out-specify it here */
+.go-shell a,
+.go-shell a:link,
+.go-shell a:visited,
+.go-shell a.been {
+  color: var(--cite);
+  text-decoration: none;
+}
+
+.go-shell a:hover {
+  color: var(--stamp-lo);
+}
+
+.go-shell .desk {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.go-shell .desk > p,
+.go-shell .folder > p,
+.go-shell .folder-open > p,
+.go-shell .clips > p:empty {
+  display: none;
+}
+
+/* the lamp slot becomes the round TPS stamp - upright, crisp */
+.go-shell .lamp {
+  position: absolute;
+  top: 0;
+  right: 14px;
+  z-index: 5;
+  width: 46px;
+  height: 46px;
+  pointer-events: none;
+}
+
+.go-shell .lamp p {
+  display: none;
+}
+
+.go-shell .lamp::before {
+  content: "TPS";
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: 2px solid var(--stamp);
+  border-radius: 50%;
+  background: rgba(238, 240, 228, 0.06);
+  color: var(--stamp);
+  font-family: var(--tps-cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  line-height: 42px;
+  text-align: center;
+  opacity: 0.92;
+  transform: none;
+  box-shadow: 0 0 0 3px rgba(196, 40, 32, 0.14);
+}
+
+.go-shell .lamp::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed rgba(196, 40, 32, 0.55);
+  border-radius: 50%;
+}
+
+/* the folder is the TPS cover sheet: off-white, red left rule, hard shadow */
+.go-shell .folder {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-right: 4px;
+  background: var(--slip);
+  border: 1px solid var(--edge);
+  border-left: 3px solid var(--stamp);
+  box-shadow:
+    2px 3px 0 #00000055,
+    0 0 0 1px #00000022;
+}
+
+/* tab = punch-clock plate */
+.go-shell .folder-tab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  align-self: flex-start;
+  margin: -12px 0 0 18px;
+  padding: 5px 12px 5px;
+  background: var(--stamp);
+  color: var(--slip);
+  border: 0;
+  border-radius: 0;
+  font-family: var(--tps-cond);
+  box-shadow: 2px 2px 0 var(--booth);
+}
+
+.go-shell .tab-mark,
+.go-shell .tab-mark p {
+  margin: 0;
+  font-family: var(--tps-cond);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--slip);
+}
+
+.go-shell .tab-sub,
+.go-shell .tab-sub p {
+  margin: 0;
+  font-family: var(--tps-cond);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #f6d8d4;
+}
+
+.go-shell .folder-tab p,
+.go-shell .hits p,
+.go-shell .rod p {
+  display: contents;
+}
+
+.go-shell .folder-tab .tag-search,
+.go-shell .folder-tab .era-search {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+}
+
+.go-shell .folder-tab .tag-search input,
+.go-shell .folder-tab .era-search input {
+  width: 16em;
+  max-width: 42vw;
+  padding: 3px 7px;
+  border: 1px solid var(--stamp-lo);
+  border-radius: 0;
+  background: var(--slip-hi);
+  color: var(--ink);
+  font-family: var(--tps-mono);
+  font-size: 11px;
+}
+
+.go-shell .folder-tab .tag-search input::placeholder,
+.go-shell .folder-tab .era-search input::placeholder {
+  color: var(--edge);
+}
+
+.go-shell .folder-tab .tag-search button,
+.go-shell .folder-tab .era-search button {
+  padding: 3px 9px;
+  border: 0;
+  border-radius: 0;
+  background: var(--booth);
+  color: var(--slip);
+  font-family: var(--tps-cond);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 1px 1px 0 var(--stamp-lo);
+}
+
+.go-shell .folder-tab .tag-search button:hover,
+.go-shell .folder-tab .era-search button:hover {
+  background: var(--slip);
+  color: var(--stamp);
+}
+
+.go-shell .folder-open {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  margin-top: 6px;
+  border-top: 2px solid var(--stamp);
+}
+
+/* clips rail = the booth file drawer: dark, stars, paper chips */
+.go-shell .clips {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 8px 14px 10px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 70% 75%, rgba(196, 40, 32, 0.12) 0 1px, transparent 1.6px),
+    linear-gradient(180deg, var(--booth-hi) 0%, var(--booth) 100%);
+  color: var(--fog);
+  border-right: 1px solid #00000088;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.05);
+  scrollbar-width: thin;
+  scrollbar-color: var(--stamp) var(--booth);
+}
+
+/* rod = steel binder bar */
+.go-shell .rod {
+  position: relative;
+  height: 5px;
+  min-height: 5px;
+  margin: 4px 6px 14px 0;
+  background: linear-gradient(180deg, #e4e6da 0%, var(--edge) 55%, var(--mute-2) 100%);
+  border-radius: 1px;
+  box-shadow:
+    inset 0 1px 0 #f6f7ee,
+    0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.go-shell .rod::before,
+.go-shell .rod::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 11px;
+  height: 11px;
+  background: radial-gradient(circle at 35% 35%, #f6f7ee, var(--edge) 55%, var(--mute-2));
+  border-radius: 50%;
+  box-shadow: 0 1px 0 #00000066;
+}
+
+.go-shell .rod::before {
+  left: -3px;
+}
+
+.go-shell .rod::after {
+  right: -3px;
+}
+
+.go-shell .clips-mark,
+.go-shell .clips-mark p {
+  margin: 0 0 6px;
+  font-family: var(--tps-cond);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e0483e;
+}
+
+.go-shell .root-up {
+  margin: 0 0 10px;
+  padding: 0 0 6px;
+  border-bottom: 1px dashed #8a8c7866;
+  font-family: var(--tps-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: var(--edge);
+}
+
+.go-shell .root-up a,
+.go-shell .clips .root-up a,
+.go-shell .clips .root-up a:link,
+.go-shell .clips .root-up a:visited {
+  display: inline;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-left: 0;
+  border-bottom: 1px dashed var(--fog);
+  box-shadow: none;
+  color: var(--slip);
+  font-family: inherit;
+  font-size: inherit;
+  transform: none;
+}
+
+.go-shell .clips .root-up a:hover {
+  color: #e0483e;
+  border-bottom-color: #e0483e;
+}
+
+.go-shell .clips .dir.tree,
+.go-shell .clips .dir {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.go-shell .clips .dir.tree ul.dir {
+  padding: 4px 0 2px 8px;
+  margin: 0 0 6px;
+  border-left: 1px dashed #8a8c7866;
+}
+
+.go-shell .clips .dir.tree > li,
+.go-shell .clips .dir > li {
+  margin: 0 0 7px;
+  position: relative;
+}
+
+/* tree entries = little TPS index cards on the booth */
+.go-shell .clips a,
+.go-shell .clips a:link,
+.go-shell .clips a:visited {
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 4px 6px 4px 8px;
+  background: var(--slip);
+  border: 1px solid var(--edge);
+  border-left: 3px solid var(--stamp);
+  border-radius: 0;
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--tps-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  box-shadow: 1px 2px 0 #00000066;
+  transform: none;
+}
+
+.go-shell .clips details {
+  margin: 0;
+}
+
+.go-shell .clips summary {
+  position: relative;
+  list-style: none;
+  cursor: pointer;
+  padding-top: 10px;
+}
+
+.go-shell .clips summary::-webkit-details-marker,
+.go-shell .clips summary::marker {
+  display: none;
+  content: "";
+}
+
+.go-shell .clips details > summary > a,
+.go-shell .clips details > summary > a:link,
+.go-shell .clips details > summary > a:visited {
+  background: var(--slip-grey);
+  border-left-color: var(--booth);
+  color: var(--ink);
+  font-family: var(--tps-cond);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.go-shell .clips details > summary::before {
+  display: none;
+}
+
+.go-shell .clips a:hover,
+.go-shell .clips details > summary > a:hover {
+  background: var(--booth);
+  border-color: var(--edge);
+  border-left-color: var(--stamp);
+  color: var(--slip);
+}
+
+.go-shell .clips a.on,
+.go-shell .clips details > summary > a.on,
+.go-shell .clips li.on:not(:has(li.on)) > details > summary > a,
+.go-shell .clips li.on:not(:has(li.on)) > a {
+  background: var(--stamp);
+  border-color: var(--stamp-lo);
+  border-left-color: var(--slip);
+  color: var(--slip);
+  box-shadow: 1px 2px 0 #000000aa;
+}
+
+.go-shell .clips li:not(.is-dir) > a,
+.go-shell .clips li:not(.is-dir):nth-child(2n) > a {
+  transform: none;
+}
+
+/* legal = the cover sheet body: faint red rules, punch holes down the margin */
+.go-shell .legal {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 14px 20px 24px 30px;
+  background:
+    radial-gradient(circle at 11px 50%, var(--booth) 0 3px, #8a8c7855 3.4px, transparent 4.2px) 0 6px / 22px 42px repeat-y,
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 17px,
+      var(--rule) 17px 18px
+    ),
+    var(--slip);
+  background-attachment: local, local, local;
+  color: var(--ink);
+  scrollbar-width: thin;
+  scrollbar-color: var(--edge) transparent;
+}
+
+.go-shell .legal::after {
+  display: none;
+}
+
+.go-shell .legal .card,
+.go-shell .legal .md,
+.go-shell .legal article,
+.go-shell .legal > p {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  padding: 0;
+}
+
+/* sheet mast: red condensed caps over a 2px red rule */
+.go-shell .legal h1 {
+  margin: 0 0 10px;
+  padding: 0 44px 3px 0;
+  border-bottom: 2px solid var(--stamp);
+  font-family: var(--tps-cond);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--stamp);
+}
+
+.go-shell .legal h2,
+.go-shell .legal h3 {
+  margin: 14px 0 6px;
+  padding: 0 0 2px;
+  border-bottom: 1px dashed var(--edge);
+  font-family: var(--tps-cond);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.go-shell .legal h2 {
+  font-size: 15px;
+}
+
+.go-shell .legal h3 {
+  font-size: 13px;
+  color: var(--mute-2);
+}
+
+.go-shell .legal p,
+.go-shell .legal li {
+  font-family: var(--tps-mono);
+}
+
+.go-shell .legal p {
+  margin: 0 0 0.7em;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.go-shell .legal a,
+.go-shell .legal a:link,
+.go-shell .legal a:visited,
+.go-shell .legal a.been {
+  color: var(--cite);
+  border-bottom: 1px dashed var(--cite);
+}
+
+.go-shell .legal a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.go-shell .legal .md-gap {
+  height: 0.4em;
+}
+
+/* code chips (^OT-001, ^MIS-777 ...) = TPS catalog-hit chips */
+.go-shell .legal a.chipcode,
+.go-shell .legal a.chipcode:link,
+.go-shell .legal a.chipcode:visited,
+.go-shell .legal a.chipcode.been,
+.go-shell .legal a.peoplecode,
+.go-shell .legal a.peoplecode:link,
+.go-shell .legal a.peoplecode:visited,
+.go-shell .legal a.peoplecode.been,
+.go-shell .legal a.eventcode,
+.go-shell .legal a.eventcode:link,
+.go-shell .legal a.eventcode:visited {
+  display: inline-block;
+  margin: 0 0 3px;
+  padding: 0 5px;
+  background: var(--slip-hi);
+  border: 1px solid #8a8c7888;
+  border-bottom: 1px solid #8a8c7888;
+  color: var(--ink);
+  font-family: var(--tps-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.go-shell .legal a.peoplecode,
+.go-shell .legal a.peoplecode:link,
+.go-shell .legal a.peoplecode:visited {
+  border-left: 3px solid var(--mute-2);
+}
+
+.go-shell .legal a.eventcode,
+.go-shell .legal a.eventcode:link,
+.go-shell .legal a.eventcode:visited {
+  border-left: 3px solid var(--stamp);
+  color: var(--stamp);
+}
+
+.go-shell .legal a.chipcode:hover,
+.go-shell .legal a.peoplecode:hover,
+.go-shell .legal a.eventcode:hover {
+  background: var(--booth);
+  border-color: var(--booth);
+  color: var(--slip);
+}
+
+.go-shell a.eventcode {
+  color: var(--cite);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--cite);
+}
+
+/* ledgers */
+.go-shell .eralook {
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.go-shell .eralook-mark,
+.go-shell .eralook-mark p {
+  margin: 0 0 8px;
+  font-family: var(--tps-cond);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--edge);
+}
+
+.go-shell .eralook-mark::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin: 0 6px 1px 0;
+  background: var(--stamp);
+  vertical-align: middle;
+}
+
+.go-shell .eralook ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.go-shell .eralook li {
+  margin: 0;
+  list-style: none;
+}
+
+/* event slips = TPS era-slips: pink-ruled paper, red left rule, hard shadow, upright */
+.go-shell .eralook .era-slip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0 3px 0 0;
+  padding: 8px 12px 10px 12px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      var(--slip-hi) 0 17px,
+      var(--slip-pink) 17px 18px
+    );
+  border: 1px solid var(--edge);
+  border-left: 3px solid var(--stamp);
+  border-radius: 0;
+  box-shadow: 2px 3px 0 rgba(28, 30, 24, 0.3);
+  transform: none;
+  color: var(--ink);
+}
+
+.go-shell .eralook .era-slip-n2 {
+  transform: none;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      var(--slip-grey) 0 17px,
+      #ecd0cc 17px 18px
+    );
+}
+
+.go-shell .eralook .era-slip-n3 {
+  transform: none;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      #f2f3ea 0 17px,
+      var(--slip-pink) 17px 18px
+    );
+}
+
+.go-shell .eralook .era-slip-title,
+.go-shell .eralook .era-slip-title:link,
+.go-shell .eralook .era-slip-title:visited {
+  display: block;
+  padding-right: 70px;
+  color: var(--stamp);
+  font-family: var(--tps-cond);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  border: 0;
+}
+
+.go-shell .eralook .era-slip-title:hover {
+  color: var(--ink);
+}
+
+/* the code sits top-right like a rubber stamp box - upright */
+.go-shell .eralook .era-slip > .era-code {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  margin: 0;
+}
+
+.go-shell .eralook .era-code {
+  display: inline-block;
+  align-self: flex-start;
+  margin: 0;
+  padding: 1px 6px 0;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  font-family: var(--tps-cond);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  opacity: 0.9;
+}
+
+.go-shell .eralook .era-sit,
+.go-shell .eralook .era-sits-empty {
+  margin: 0;
+  font-family: var(--tps-mono);
+  font-size: 10px;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.go-shell .eralook .era-sits {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  gap: 6px;
+}
+
+/* a sit row = a punch-clock entry card (TPS catalog-block: grey paper, dashed edge) */
+.go-shell .eralook .era-sit-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin: 0;
+  padding: 6px 9px 7px;
+  background: var(--slip-grey);
+  border: 1px dashed var(--edge);
+  color: var(--ink);
+}
+
+.go-shell .eralook .era-slip .era-sit-row {
+  padding: 5px 0 2px;
+  background: transparent;
+  border: 0;
+  border-top: 1px dashed var(--edge);
+}
+
+.go-shell .eralook .era-sit-page,
+.go-shell .eralook .era-sit-page:link,
+.go-shell .eralook .era-sit-page:visited {
+  display: inline-block;
+  padding: 0 5px;
+  background: var(--slip-hi);
+  border: 1px solid #8a8c7888;
+  color: var(--ink);
+  font-family: var(--tps-cond);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.go-shell .eralook .era-sit-page:hover {
+  background: var(--booth);
+  border-color: var(--booth);
+  color: var(--slip);
+}
+
+.go-shell .eralook .era-sit-when,
+.go-shell .eralook .era-sit-when:link,
+.go-shell .eralook .era-sit-when:visited {
+  margin: 0;
+  font-family: var(--tps-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--mute-2);
+  border-bottom: 1px dotted transparent;
+}
+
+.go-shell .eralook .era-sit-when:hover {
+  color: var(--stamp);
+  border-bottom-color: var(--stamp);
+}
+
+.go-shell .eralook .era-sit-note {
+  flex: 1 1 100%;
+  margin: 3px 0 0;
+  font-family: var(--tps-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.go-shell .eralook.taglook-empty {
+  color: var(--mute);
+  font-family: var(--tps-mono);
+  font-size: 12px;
+  padding-left: 0;
+}
+
+/* face cards (lorecard faces) - TPS index cards, upright */
+.go-shell .legal .faces {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.5em, 1fr));
+  gap: 12px 14px;
+  margin: 12px 0 0;
+  align-items: start;
+}
+
+.go-shell .legal .faces .face,
+.go-shell .legal article.face {
+  margin: 0;
+  padding: 9px 11px 11px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      var(--slip-hi) 0 17px,
+      var(--slip-pink) 17px 18px
+    );
+  border: 1px solid var(--edge);
+  border-left: 3px solid var(--stamp);
+  box-shadow: 2px 3px 0 rgba(28, 30, 24, 0.3);
+  color: var(--ink);
+  font-family: var(--tps-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  transform: none;
+}
+
+.go-shell .legal .faces .face:nth-child(3n),
+.go-shell .legal .faces .face:nth-child(3n+2) {
+  transform: none;
+}
+
+.go-shell .legal .faces .face:nth-child(3n) {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      var(--slip-grey) 0 17px,
+      #ecd0cc 17px 18px
+    );
+}
+
+.go-shell .legal .faces .face h1,
+.go-shell .legal .faces .face h2 {
+  margin: 0 0 3px;
+  padding: 0;
+  border: 0;
+  font-family: var(--tps-cond);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stamp);
+}
+
+.go-shell .legal .faces .face p {
+  margin: 0 0 0.2em;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.go-shell .legal .face-deck {
+  margin: 0;
+}
+
+.go-shell .legal .face-deck-label {
+  font-family: var(--tps-cond);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--edge);
+  margin: 0 0 6px;
+}
+
+/* lip = form foot: booth strip, red rule, TPS-214 form number */
+.go-shell .lip {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 5px 12px 5px 12px;
+  background: var(--booth);
+  color: var(--stamp);
+  font-family: var(--tps-cond);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  border-top: 2px solid var(--stamp);
+}
+
+.go-shell .lip::before {
+  display: none;
+}
+
+.go-shell .lip::after {
+  content: "TPS-214";
+  margin-left: auto;
+  font-family: var(--tps-cond);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--edge);
+}
+
+.go-shell .lip p {
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .go-shell .lamp {
+    display: none;
+  }
+
+  .go-shell .legal h1 {
+    padding-right: 0;
+  }
+}

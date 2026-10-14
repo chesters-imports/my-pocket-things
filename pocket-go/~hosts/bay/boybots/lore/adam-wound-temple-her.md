@@ -4,7 +4,7 @@ title: Adam's wound / temple her
 maker: Lore
 filed_by: Lore
 class: sticky
-environment: boybots
+environment: bay
 captured: 2026-09-04
 whose-view: Lore
 ---

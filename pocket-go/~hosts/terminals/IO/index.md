@@ -1,6 +1,6 @@
 ---
 crate: crate.6088810EE27498BA
-title: LOGIN
+title: HOME
 cover: io-banner-hole.png
 ---
 
@@ -21,5 +21,5 @@ cover: io-banner-hole.png
 
 {{.center}}CHESTER'S IMPORTS IS ON-LINE
 
-{{.center}}GO.CHESTERSIMPORTS
+{{.center}}{{link:GO.CHESTERSIMPORTS}}
 ---
